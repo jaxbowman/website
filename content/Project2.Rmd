@@ -1,0 +1,287 @@
+---
+title: "Project 2"
+author: "Jaxon Bowman"
+date: "11/24/2019"
+output:
+  pdf_document: default
+  word_document: default
+  html_document: default
+---
+## Jaxon Bowman Jpb2995 Project 2
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyr)
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+```
+
+## 0. Introduction
+```{R}
+ipf_lifts <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-10-08/ipf_lifts.csv")
+data3<-na.omit(ipf_lifts)
+ 
+select<-dplyr::select
+data4<-data3%>%select(sex, "bodyweight"=bodyweight_kg, "maxsquat"=best3squat_kg, "maxbench"=best3bench_kg, "maxdead"=best3deadlift_kg, equipment)
+data<-data3%>%select(sex, event, equipment, age, division, "bodyweight"=bodyweight_kg, "maxsquat"=best3squat_kg,"maxbench"=best3bench_kg, "maxdead"=best3deadlift_kg, place)
+data <- data[!is.na(as.numeric(as.character(data$place))),]
+
+```
+My data set contains information about powerlifting. I obtained this data set from the GitHub Tidy Tuesday website. This dataset includes information from various powerlifting competetions over time. The main variables, I will be looking at for this project include; body weight, best 3 bench press weight, best 3 squat weight, best 3 deadlift weight, gender, place, and equipment type. Body weight is how much the powerlifter weighed in kilograms. Best 3 squat, deadlift, and bench are each columns that describe the maximum weight of three successful attempts. These are both numeric variables. Place is the weightlifter's earned place in the competition they participated in. Equipment type tells us the type of equipment the weightlifter used. It is a categorical variable and the three categoreis are; raw (indicating no equipment), single-ply, and wraps. Finally, the binary variable in this data set is gender, with male and female. I choose this data set because I am interested in sports, and I thought it would be interesting to see the differences between men and women as well as the differences based on what type equipment was used. 
+
+## 1. (15 pts) Perform a MANOVA testing whether any of your numeric variables (or a subset of them, if including them all doesn’t make sense) show a mean difference across levels of one of your categorical variables (3). If they do, perform univariate ANOVAs to find response(s) showing a mean difference across groups (3), and perform post-hoc t tests to find which groups differ (3). Discuss the number of tests you have performed, calculate the probability of at least one type I error (if unadjusted), and adjust the significance level accordingly (bonferroni correction) before discussing significant differences (3). Briefly discuss assumptions and whether or not they are likely to have been met (2).
+
+
+```{R}
+
+
+##MANOVA
+man1<-manova(cbind(maxsquat,maxbench, maxdead)~equipment, data=data)
+summary(man1)
+
+
+##Univariate ANOVA
+summary.aov(man1)
+##Post hoc t-tests
+data%>%group_by(equipment)%>%summarize(mean(maxsquat),mean(maxbench), mean(maxdead))
+pairwise.t.test(data$maxsquat,data$equipment, p.adj="none")
+pairwise.t.test(data$maxbench,data$equipment,p.adj="none")
+pairwise.t.test(data$maxdead,data$equipment,p.adj="none")
+#probability of type I error
+1-(.95)^9
+#Bonferroni correction
+0.05/13
+```
+I choose to run the MANOVA to test whether maximum bench press, maximum squat, and maximum deadlift differed by the equipment type. So, the null hypothesis was: For maximum squat, bench press, and deadlift, means of each equipment type are equal. The alternative hypothesis was: for at least one depenedent variable, at least one equipment type mean is different. The MANOVA was significant, showing significant differences were found among the three equipment types on the three dependent variables, Pillai trace = 0.127  , pseudo F(6,47256)=534.85, p<0.0001. 
+
+Next, I performed univariate ANOVAs to find responses showing a mean differences across groups.The univariate ANOVAs for maximum squat, maximum bench, and maximum deadlift  were also significant, F(2,23629)=682.48, p<0.0001, F(2, 23629)=413.85, p<0.0001, and F(2, 23269)=160.8, p<0.0001 respectively. After performing the t-tests, it was found that Raw and single-ply equipment as well as raw and wraps differed significantly for maximum squat. It was also found that raw and single-ply, raw and wraps, and single-ply and wraps equipment differed significantly for maximum deadlift. For maximum bench press, raw and single-ply and raw and wraps differed significantly. 
+
+In total, there was 1 MANOVA, 3 ANOVAS, and 9 t-tests performed. This gives us a total of 13 tests. The probability of at least one type I error is 0.37 as calculated by (1-(.95)^13). The adjusted significance level is 0.0038 according the the Bonferroni correction. This new significance level did not change the outcome of the post-hoc t-tests and the results on which groups were significantly different from one another stayed the same.
+
+The assumptions for MANOVA include random samples and independent observations, multivariate normality of dependent variables, homogeneity of within-group covariance matrices, linear relationships among dependent variables, no extreme univariate or multivariate outliers, and no multicolinearlity. Not all of these were met in my test. Specifically, no multicolinearity was not met as the three different dependent variables were likely to be correlated in this case. Also, there most likely was not linear relationships among dependent variables. The assumptions that were met include; random samples, multivariate normality of DVs, homogeneity of within-group covariance matrices, and no extreme univariate or multivariate outliers. 
+
+
+## 2. (10 pts) Randomization Test
+```{R}
+t.test(data=data, bodyweight~sex)
+
+weight<-data%>%dplyr::select(1,6)
+weight%>%dplyr::group_by(sex)%>%
+  dplyr::summarize(means=mean(bodyweight))%>%
+  dplyr::summarize(`mean_diff:`=diff(means))
+
+
+##graph
+rand_dist4<-vector()
+for(i in 1:5000){
+new4<-data.frame(bodyweight=sample(data$bodyweight),sex=data$sex)
+rand_dist4[i]<-mean(new4[new4$sex=="M",]$bodyweight)-
+ mean(new4[new4$sex=="F",]$bodyweight)}
+
+{hist(rand_dist4,main="",ylab=""); abline(v =22.8,col="red")}
+```
+I choose to perform a t-test on body weight and sex. The null hypotheis is that there is no difference in means of body weight between males and females. The alternative hypothesis is that the true difference in means between male and females is not equal to zero. The t-test resulted in a p-value less than 0.05, so this means that there is a signficant different in body weight between males and females. The females had an average body weight of 64.976 kg, and the males had an average body weight of 87.872 kg.
+### 3. (35 pts) Linear Regression Model
+```{R}
+
+
+##lm with mean centering
+data$maxsquat_c <- data$maxsquat - mean(data$maxsquat)
+data$maxbench_c<-data$maxbench - mean(data$maxbench)
+data$bodyweight_c<-data$bodyweight-mean(data$bodyweight)
+
+fit2<-lm(bodyweight~maxsquat_c*maxbench_c, data=data)
+summary(fit2)
+
+#plot using ggplot
+
+new1<-data
+new1$maxsquat_c<-mean(data$maxsquat_c)
+new1$mean<-predict(fit2,new1)
+new1$maxsquat_c<-mean(data$maxsquat_c)+sd(data$maxsquat_c)
+new1$plus.sd<-predict(fit2,new1)
+new1$maxsquat_c<-mean(data$maxsquat_c)-sd(data$maxsquat_c)
+new1$minus.sd<-predict(fit2,new1)
+newint<-new1%>%select(bodyweight,maxbench_c,mean,plus.sd,minus.sd)%>%gather(maxsquat,value,-bodyweight,-maxbench_c)
+
+mycols<-c("#619CFF","#F8766D","#00BA38")
+names(mycols)<-c("-1 sd","mean","+1 sd")
+mycols=as.factor(mycols)
+
+ggplot(data,aes(maxbench_c,bodyweight),group=mycols)+geom_point()+geom_line(data=new1,aes(y=mean,color="mean"))+geom_line(data=new1,aes(y=plus.sd,color="+1 sd"))+geom_line(data=new1,aes(y=minus.sd,color="-1 sd"))+scale_color_manual(values=mycols)+labs(color="Max squat")+theme(legend.position=c(.9,.2))
+
+##qplot
+qplot(x = maxbench_c, y = bodyweight, color = maxsquat_c, data = data) +
+  stat_smooth(method = "lm", se = FALSE, fullrange = TRUE)
+
+##linearity/ homoskedastity
+resids<-fit2$residuals
+fitvals<-fit2$fitted.values
+ggplot()+geom_point(aes(fitvals,resids))+geom_hline(yintercept=0, color='red')
+#normality
+ggplot()+geom_histogram(aes(resids), bins=20)
+ggplot()+geom_qq(aes(sample=resids))+geom_qq_line(aes(sample=resids))
+
+##robust SE
+library(sandwich)
+library(lmtest)
+bptest(fit2)
+
+coeftest(fit2, vcov = vcovHC(fit2))
+### what proportion of the variation in outcome does the model explain??
+
+##regression re-ran without interaction
+fit3<-lm(bodyweight~maxsquat_c+maxbench_c, data=data)
+summary(fit3)
+
+##compare two models
+anova(fit2,fit3,test="LRT")
+```
+The linear regression I performed predicted body weight in kilograms from maximum squat weight and maximum bench press weight. The null and alternative hypthesis' for the GLM are Ho: There is no interaction between max squat weight and max bench press weight on body weight. The alternative Ha: There is an interaction between max squat weight and max bench press weight on body weight. The intercepts can be interpreted as: for every 1 kg increase in max squat weight, body weight increases by an average of 1.159e-01 kilograms. Also, for every 1 kg increase in maximum bench press, body weight increases by 1.612e-01 kgs. The interaction shows that for every 1kg increase in both max bench and max squat, body weight increases by 1.921e-04 kgs. 
+
+I checked the assumptions for linearity, homoskedasticity, and normality graphically. Linearity and homoskedasticity were checked by plotted the fitvals by the resids using ggplot. Both of these assumptions were met. Next, I checked the assumption of normality by making a histogram of the residuals and by making a line graph of the theoretical vs. sample. The normality assumption was met. 
+
+After checking the assumptions, I next recomputed the regression using the results with robust standard errors using coeftest. The results slightly differed from before using the robust standard errors. The new standard error values were all larger than the standard error values before, but this did not change the significance of any of the predictors. My model explained 52.75% of the variation in outcome as calculated from the adjusted R-squared value. 
+###4. (5 pts)Linear Regression Model with Bootstrapped SEs
+
+```{R}
+sample_distn<-replicate(1000, {
+  boot_dat<-boot_dat<-data[sample(nrow(data), replace=TRUE),]
+  fit6<-lm(bodyweight~maxsquat_c*maxbench_c, data=boot_dat)
+  coef(fit6)
+})
+
+sample_distn%>%t%>%as.data.frame%>%summarize_all(sd)
+
+
+
+```
+
+Next, I reran the same regression with the bootstrapped standard errors. These standard errors are slightly different than the original and the robust SE values. The bootstrapped SE for the intercept was 0.146, while the original was 0.139. The max squat SE for the bootstrap was 0.00465 while the SE for the original was 0.0037. The max bench bootstrapped SE was 0.00614 while the original was 0.005. Lastly the bootstrapped SE for the interaction was 2.343e-05, while the original was 2.21e-05. So overall, the bootstrapped standard errors were all slightly higher than the original standard errors. Compared to the robust standard errors, the bootstrapped standard errors were all very close. The p-values were still under 0.05 when using the bootstrapped standard errors. 
+
+###5. (40 pts) Logistic Regression
+
+```{R} 
+data2<-data%>%mutate(y=ifelse(sex=="M", 1,0))
+fit5<-glm(y~bodyweight+maxsquat, data=data2, family=binomial)
+summary(fit5)
+exp(coef(fit5))
+
+
+##confusion-matrix
+prob<-predict(fit5, type="response")
+table(predict=as.numeric(prob>.5), truth=data2$y)%>%addmargins
+
+
+#accuracy
+(6290+13262)/23632
+#tnr (specificity)
+(6290)/8140
+#tpr (sensitivity aka recall)
+(13262)/15528
+#ppv (precision)
+(13462)/(15276)
+## density of log-odds ggplot (logit)
+
+data2$y <-as.factor(data2$y)
+data2$logit<-predict(fit5, type="link")
+data2%>%ggplot()+geom_density(aes(logit, color=y, fill=y), alpha=.4)+geom_vline(xintercept = 0)+xlab("predictor (logit)")
+
+##ROC Curve
+library(plotROC)
+prob3<-predict(fit5, type="response")
+ROCplot3<-ggplot(data2)+geom_roc(aes(d=sex,m=prob3), n.cuts=0)+geom_segment(aes(x=0, xend=1, y=0, yend=1), lty=2)
+ROCplot3
+calc_auc(ROCplot3)
+
+##10 fold CV
+class_diag<-function(probs,truth){
+ tab<-table(factor(probs>.5,levels=c("FALSE","TRUE")),truth)
+ acc=sum(diag(tab))/sum(tab)
+ sens=tab[2,2]/colSums(tab)[2]
+ spec=tab[1,1]/colSums(tab)[1]
+ ppv=tab[2,2]/rowSums(tab)[2]
+ if(is.numeric(truth)==FALSE & is.logical(truth)==FALSE) truth<-as.numeric(truth)-1
+ #CALCULATE EXACT AUC
+ ord<-order(probs, decreasing=TRUE)
+ probs <- probs[ord]; truth <- truth[ord]
+ TPR=cumsum(truth)/max(1,sum(truth))
+ FPR=cumsum(!truth)/max(1,sum(!truth))
+ dup<-c(probs[-1]>=probs[-length(probs)], FALSE)
+ TPR<-c(0,TPR[!dup],1); FPR<-c(0,FPR[!dup],1)
+ n <- length(TPR)
+ auc<- sum( ((TPR[-1]+TPR[-n])/2) * (FPR[-1]-FPR[-n]) )
+ data.frame(acc,sens,spec,ppv,auc)
+} 
+set.seed(1234)
+k=10 
+datap<-data2[sample(nrow(data2)),] 
+folds<-cut(seq(1:nrow(data2)),breaks=k,labels=F) 
+diags<-NULL
+for(i in 1:k){
+ 
+ train<-datap[folds!=i,]
+ test<-datap[folds==i,]
+ truth<-test$y
+
+ fit<-glm(y~bodyweight+maxsquat,data=train,family="binomial")
+ probs<-predict(fit,newdata = test,type="response")
+
+ diags<-rbind(diags,class_diag(probs,truth))
+}
+
+apply(diags,2, mean)
+
+
+```
+I choose to perform a logistic regression predicting sex from body weight and max squat weight. Sex was binary, with males=1 and females =0. Based on the results, there is a signficant effect of body weight and max squat weight on predicting whether or not the athlete was male. (p<0.05). The coefficients can be interpreted using log. For every one kg increase in body weight multiplies the odds of being male by 1.004296. Also, for every 1 kg increase in squat weight multiplies the odds of being male by 1.033947. 
+
+After making a confusion matrix, I computed the accuracy to be 0.827, the sensitivity to be 0.854, the specificity to be 0.773, and finally the PPV was 0.881. The accuracy is the proportion of correctly classified cases, so an accuracy of 0.827 is pretty good. Sensitivity or true positive rate was the proportion of men identified correctly, so again 0.854 is good as well. Specificity was the proportion of women correctly classified and it was 0.881 which is good too. I next used ggplot to plot density of log-odds(logit) by my primary outcome variable (gender). Overall, the accuracy, sensitivity, specificity, and precision were all pretty high. 
+
+Next I generated a ROC curve. I calculated the AUC, or the area under the curve to be 0.903. The AUC quantifies how well we are at predicting sex from body weight and max squat weight. An AUC of 0.903 is pretty good at predicting the outcome!Next, I performed the 10-fold cross variation. The accuracy was 0.836. The sensitivity was 0.881. The specificity was 0.752. The ppv was 0.867. The AUC, or the area under the curve was 0.903.
+###6. (10 pts) LASSO
+
+```{R}
+library(glmnet)
+library(dplyr)
+select<-dplyr::select 
+lassdata<-data4%>%mutate(y=ifelse(sex=="M", 1,0))
+lassdata<-lassdata%>%select(-sex)
+
+fit_lass<-lm(y~.,data=lassdata)
+yhat<-predict(fit_lass)
+mean((lassdata$y-yhat)^2) 
+
+y<-as.matrix(lassdata$y)
+x <- model.matrix(y~ ., data =lassdata)
+cv<-cv.glmnet(x,y, family='binomial') 
+lasso1<-glmnet(x,y,family="binomial",lambda=cv$lambda.1se)
+coef(lasso1)
+
+lass1<-rownames(coef(lasso1))[which(coef(lasso1)!=0)]
+select<-dplyr::select
+lassdata1<-x%>% as.data.frame%>%select(lass1)%>%mutate(y=lassdata$y)
+
+set.seed(1234)
+k=10
+
+data88<-lassdata1[sample(nrow(lassdata)),]
+folds88<-cut(seq(1:nrow(lassdata)), breaks=k, labels=FALSE)
+
+diags88<-NULL
+for(i in 1:k){
+  train88<-data88[folds88!=i,]
+  test88<-data88[folds88==i,]
+  truth88<-test88$y
+  fit88<-glm(y~., data=train88, family="binomial")
+  probs88<-predict(fit88, newdata=test88, type="response")
+  preds88<-ifelse(probs88>0.5, 1, 0)
+  diags88<-rbind(diags88, class_diag(probs88, truth88))
+}
+apply(diags88,2, mean)
+
+
+
+
+```
+I choose to predict sex from all of the other variables in the dataset using a LASSO regression. To my suprise, all of the variables were retained as they all had non-zero LASSO coefficients. This makes sense though, as the amount of weight you can lift in any exercise most likely can predict whether or not an athlete was male or female, as males typically lift more. The accuracy was 0.887. The sensitivity was 0.912. The specificity was 0.842. The ppv was 0.914, and the AUC was 0.953. Compared to the results from #5, the accuracy is slightly higher. The accuracy from #5 was 0.836 and this accuracy was 0.887. All of the statistics were higher than the results from #5 which makes sense as only the best predictors were used to predict sex. The area under the curve value of 0.953 is a great AUC.

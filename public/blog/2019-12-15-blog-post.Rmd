@@ -1,0 +1,9 @@
+---
+title: Blog Post
+author: Jaxon Bowman
+date: '2019-12-15'
+slug: blog-post
+categories: []
+tags: []
+description: ''
+---

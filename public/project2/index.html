@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Jaxon Bowman" />
+    <meta name="description" content="Describe your website">
+    <link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico">
+    <title>Project 2</title>
+    <meta name="generator" content="Hugo 0.61.0" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="/css/main.css" />
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,200bold,400old" />
+    
+    <!--[if lt IE 9]>
+			<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+			<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->
+
+    
+  </head>
+
+  <body>
+    <div id="wrap">
+
+      
+      <nav class="navbar navbar-default">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/"><i class="fa fa-home"></i></a>
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <div class="navbar-collapse collapse" id="navbar">
+      <ul class="nav navbar-nav navbar-right">
+      
+        
+        <li><a href="/blog/">BLOG</a></li>
+        
+        <li><a href="/projects/">PROJECTS</a></li>
+        
+        <li><a href="/resumepro.pdf/">RESUME</a></li>
+        
+      
+      </ul>
+    </div>
+  </div>
+</nav>
+
+      
+      <div class="container">
+        <div class="blog-post">
+          <h3>
+            <strong><a href="/project2/">Project 2</a></strong>
+          </h3>
+        </div>
+        <div class="blog-title">
+          <h4>
+          January 1, 0001
+            &nbsp;&nbsp;
+            
+          </h4>
+        </div>
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="blogpost">
+              
+
+
+<div id="jaxon-bowman-jpb2995-project-2" class="section level2">
+<h2>Jaxon Bowman Jpb2995 Project 2</h2>
+</div>
+<div id="introduction" class="section level2">
+<h2>0. Introduction</h2>
+<pre class="r"><code>ipf_lifts &lt;- readr::read_csv(&quot;https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-10-08/ipf_lifts.csv&quot;)</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   name = col_character(),
+##   sex = col_character(),
+##   event = col_character(),
+##   equipment = col_character(),
+##   age = col_double(),
+##   age_class = col_character(),
+##   division = col_character(),
+##   bodyweight_kg = col_double(),
+##   weight_class_kg = col_character(),
+##   best3squat_kg = col_double(),
+##   best3bench_kg = col_double(),
+##   best3deadlift_kg = col_double(),
+##   place = col_character(),
+##   date = col_date(format = &quot;&quot;),
+##   federation = col_character(),
+##   meet_name = col_character()
+## )</code></pre>
+<pre class="r"><code>data3&lt;-na.omit(ipf_lifts)
+ 
+select&lt;-dplyr::select
+data4&lt;-data3%&gt;%select(sex, &quot;bodyweight&quot;=bodyweight_kg, &quot;maxsquat&quot;=best3squat_kg, &quot;maxbench&quot;=best3bench_kg, &quot;maxdead&quot;=best3deadlift_kg, equipment)
+data&lt;-data3%&gt;%select(sex, event, equipment, age, division, &quot;bodyweight&quot;=bodyweight_kg, &quot;maxsquat&quot;=best3squat_kg,&quot;maxbench&quot;=best3bench_kg, &quot;maxdead&quot;=best3deadlift_kg, place)
+data &lt;- data[!is.na(as.numeric(as.character(data$place))),]</code></pre>
+<pre><code>## Warning in `[.tbl_df`(data, !is.na(as.numeric(as.character(data$place))), :
+## NAs introduced by coercion</code></pre>
+<p>My data set contains information about powerlifting. I obtained this data set from the GitHub Tidy Tuesday website. This dataset includes information from various powerlifting competetions over time. The main variables, I will be looking at for this project include; body weight, best 3 bench press weight, best 3 squat weight, best 3 deadlift weight, gender, place, and equipment type. Body weight is how much the powerlifter weighed in kilograms. Best 3 squat, deadlift, and bench are each columns that describe the maximum weight of three successful attempts. These are both numeric variables. Place is the weightlifter’s earned place in the competition they participated in. Equipment type tells us the type of equipment the weightlifter used. It is a categorical variable and the three categoreis are; raw (indicating no equipment), single-ply, and wraps. Finally, the binary variable in this data set is gender, with male and female. I choose this data set because I am interested in sports, and I thought it would be interesting to see the differences between men and women as well as the differences based on what type equipment was used.</p>
+</div>
+<div id="pts-perform-a-manova-testing-whether-any-of-your-numeric-variables-or-a-subset-of-them-if-including-them-all-doesnt-make-sense-show-a-mean-difference-across-levels-of-one-of-your-categorical-variables-3.-if-they-do-perform-univariate-anovas-to-find-responses-showing-a-mean-difference-across-groups-3-and-perform-post-hoc-t-tests-to-find-which-groups-differ-3.-discuss-the-number-of-tests-you-have-performed-calculate-the-probability-of-at-least-one-type-i-error-if-unadjusted-and-adjust-the-significance-level-accordingly-bonferroni-correction-before-discussing-significant-differences-3.-briefly-discuss-assumptions-and-whether-or-not-they-are-likely-to-have-been-met-2." class="section level2">
+<h2>1. (15 pts) Perform a MANOVA testing whether any of your numeric variables (or a subset of them, if including them all doesn’t make sense) show a mean difference across levels of one of your categorical variables (3). If they do, perform univariate ANOVAs to find response(s) showing a mean difference across groups (3), and perform post-hoc t tests to find which groups differ (3). Discuss the number of tests you have performed, calculate the probability of at least one type I error (if unadjusted), and adjust the significance level accordingly (bonferroni correction) before discussing significant differences (3). Briefly discuss assumptions and whether or not they are likely to have been met (2).</h2>
+<pre class="r"><code>##MANOVA
+man1&lt;-manova(cbind(maxsquat,maxbench, maxdead)~equipment, data=data)
+summary(man1)</code></pre>
+<pre><code>##              Df  Pillai approx F num Df den Df    Pr(&gt;F)    
+## equipment     2 0.12718   534.85      6  47256 &lt; 2.2e-16 ***
+## Residuals 23629                                             
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>##Univariate ANOVA
+summary.aov(man1)</code></pre>
+<pre><code>##  Response maxsquat :
+##                Df    Sum Sq Mean Sq F value    Pr(&gt;F)    
+## equipment       2   7169805 3584903  682.48 &lt; 2.2e-16 ***
+## Residuals   23629 124117267    5253                      
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+##  Response maxbench :
+##                Df   Sum Sq Mean Sq F value    Pr(&gt;F)    
+## equipment       2  2544755 1272377  413.85 &lt; 2.2e-16 ***
+## Residuals   23629 72647615    3075                      
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+##  Response maxdead :
+##                Df   Sum Sq Mean Sq F value    Pr(&gt;F)    
+## equipment       2  1280991  640495   160.8 &lt; 2.2e-16 ***
+## Residuals   23629 94116634    3983                      
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>##Post hoc t-tests
+data%&gt;%group_by(equipment)%&gt;%summarize(mean(maxsquat),mean(maxbench), mean(maxdead))</code></pre>
+<pre><code>## # A tibble: 3 x 4
+##   equipment  `mean(maxsquat)` `mean(maxbench)` `mean(maxdead)`
+##   &lt;chr&gt;                 &lt;dbl&gt;            &lt;dbl&gt;           &lt;dbl&gt;
+## 1 Raw                    183.             118.            207.
+## 2 Single-ply             225.             142.            224.
+## 3 Wraps                  236.             156.            263.</code></pre>
+<pre class="r"><code>pairwise.t.test(data$maxsquat,data$equipment, p.adj=&quot;none&quot;)</code></pre>
+<pre><code>## 
+##  Pairwise comparisons using t tests with pooled SD 
+## 
+## data:  data$maxsquat and data$equipment 
+## 
+##            Raw     Single-ply
+## Single-ply &lt; 2e-16 -         
+## Wraps      7.4e-09 0.22      
+## 
+## P value adjustment method: none</code></pre>
+<pre class="r"><code>pairwise.t.test(data$maxbench,data$equipment,p.adj=&quot;none&quot;)</code></pre>
+<pre><code>## 
+##  Pairwise comparisons using t tests with pooled SD 
+## 
+## data:  data$maxbench and data$equipment 
+## 
+##            Raw     Single-ply
+## Single-ply &lt; 2e-16 -         
+## Wraps      5.2e-08 0.057     
+## 
+## P value adjustment method: none</code></pre>
+<pre class="r"><code>pairwise.t.test(data$maxdead,data$equipment,p.adj=&quot;none&quot;)</code></pre>
+<pre><code>## 
+##  Pairwise comparisons using t tests with pooled SD 
+## 
+## data:  data$maxdead and data$equipment 
+## 
+##            Raw     Single-ply
+## Single-ply &lt; 2e-16 -         
+## Wraps      2.4e-12 8.9e-07   
+## 
+## P value adjustment method: none</code></pre>
+<pre class="r"><code>#probability of type I error
+1-(.95)^9</code></pre>
+<pre><code>## [1] 0.3697506</code></pre>
+<pre class="r"><code>#Bonferroni correction
+0.05/13</code></pre>
+<pre><code>## [1] 0.003846154</code></pre>
+<p>I choose to run the MANOVA to test whether maximum bench press, maximum squat, and maximum deadlift differed by the equipment type. So, the null hypothesis was: For maximum squat, bench press, and deadlift, means of each equipment type are equal. The alternative hypothesis was: for at least one depenedent variable, at least one equipment type mean is different. The MANOVA was significant, showing significant differences were found among the three equipment types on the three dependent variables, Pillai trace = 0.127 , pseudo F(6,47256)=534.85, p&lt;0.0001.</p>
+<p>Next, I performed univariate ANOVAs to find responses showing a mean differences across groups.The univariate ANOVAs for maximum squat, maximum bench, and maximum deadlift were also significant, F(2,23629)=682.48, p&lt;0.0001, F(2, 23629)=413.85, p&lt;0.0001, and F(2, 23269)=160.8, p&lt;0.0001 respectively. After performing the t-tests, it was found that Raw and single-ply equipment as well as raw and wraps differed significantly for maximum squat. It was also found that raw and single-ply, raw and wraps, and single-ply and wraps equipment differed significantly for maximum deadlift. For maximum bench press, raw and single-ply and raw and wraps differed significantly.</p>
+<p>In total, there was 1 MANOVA, 3 ANOVAS, and 9 t-tests performed. This gives us a total of 13 tests. The probability of at least one type I error is 0.37 as calculated by (1-(.95)^13). The adjusted significance level is 0.0038 according the the Bonferroni correction. This new significance level did not change the outcome of the post-hoc t-tests and the results on which groups were significantly different from one another stayed the same.</p>
+<p>The assumptions for MANOVA include random samples and independent observations, multivariate normality of dependent variables, homogeneity of within-group covariance matrices, linear relationships among dependent variables, no extreme univariate or multivariate outliers, and no multicolinearlity. Not all of these were met in my test. Specifically, no multicolinearity was not met as the three different dependent variables were likely to be correlated in this case. Also, there most likely was not linear relationships among dependent variables. The assumptions that were met include; random samples, multivariate normality of DVs, homogeneity of within-group covariance matrices, and no extreme univariate or multivariate outliers.</p>
+</div>
+<div id="pts-randomization-test" class="section level2">
+<h2>2. (10 pts) Randomization Test</h2>
+<pre class="r"><code>t.test(data=data, bodyweight~sex)</code></pre>
+<pre><code>## 
+##  Welch Two Sample t-test
+## 
+## data:  bodyweight by sex
+## t = -84.475, df = 21803, p-value &lt; 2.2e-16
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -23.42733 -22.36482
+## sample estimates:
+## mean in group F mean in group M 
+##        64.97561        87.87168</code></pre>
+<pre class="r"><code>weight&lt;-data%&gt;%dplyr::select(1,6)
+weight%&gt;%dplyr::group_by(sex)%&gt;%
+  dplyr::summarize(means=mean(bodyweight))%&gt;%
+  dplyr::summarize(`mean_diff:`=diff(means))</code></pre>
+<pre><code>## # A tibble: 1 x 1
+##   `mean_diff:`
+##          &lt;dbl&gt;
+## 1         22.9</code></pre>
+<pre class="r"><code>##graph
+rand_dist4&lt;-vector()
+for(i in 1:5000){
+new4&lt;-data.frame(bodyweight=sample(data$bodyweight),sex=data$sex)
+rand_dist4[i]&lt;-mean(new4[new4$sex==&quot;M&quot;,]$bodyweight)-
+ mean(new4[new4$sex==&quot;F&quot;,]$bodyweight)}
+
+{hist(rand_dist4,main=&quot;&quot;,ylab=&quot;&quot;); abline(v =22.8,col=&quot;red&quot;)}</code></pre>
+<p><img src="/Project2_files/figure-html/unnamed-chunk-3-1.png" width="672" />
+I choose to perform a t-test on body weight and sex. The null hypotheis is that there is no difference in means of body weight between males and females. The alternative hypothesis is that the true difference in means between male and females is not equal to zero. The t-test resulted in a p-value less than 0.05, so this means that there is a signficant different in body weight between males and females. The females had an average body weight of 64.976 kg, and the males had an average body weight of 87.872 kg.
+### 3. (35 pts) Linear Regression Model</p>
+<pre class="r"><code>##lm with mean centering
+data$maxsquat_c &lt;- data$maxsquat - mean(data$maxsquat)
+data$maxbench_c&lt;-data$maxbench - mean(data$maxbench)
+data$bodyweight_c&lt;-data$bodyweight-mean(data$bodyweight)
+
+fit2&lt;-lm(bodyweight~maxsquat_c*maxbench_c, data=data)
+summary(fit2)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = bodyweight ~ maxsquat_c * maxbench_c, data = data)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -46.982 -11.273  -2.817   8.611 117.195 
+## 
+## Coefficients:
+##                        Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)           7.903e+01  1.386e-01 570.369   &lt;2e-16 ***
+## maxsquat_c            1.159e-01  3.719e-03  31.154   &lt;2e-16 ***
+## maxbench_c            1.612e-01  5.001e-03  32.239   &lt;2e-16 ***
+## maxsquat_c:maxbench_c 1.921e-04  2.211e-05   8.689   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 16.77 on 23628 degrees of freedom
+## Multiple R-squared:  0.5276, Adjusted R-squared:  0.5275 
+## F-statistic:  8795 on 3 and 23628 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="r"><code>#plot using ggplot
+
+new1&lt;-data
+new1$maxsquat_c&lt;-mean(data$maxsquat_c)
+new1$mean&lt;-predict(fit2,new1)
+new1$maxsquat_c&lt;-mean(data$maxsquat_c)+sd(data$maxsquat_c)
+new1$plus.sd&lt;-predict(fit2,new1)
+new1$maxsquat_c&lt;-mean(data$maxsquat_c)-sd(data$maxsquat_c)
+new1$minus.sd&lt;-predict(fit2,new1)
+newint&lt;-new1%&gt;%select(bodyweight,maxbench_c,mean,plus.sd,minus.sd)%&gt;%gather(maxsquat,value,-bodyweight,-maxbench_c)
+
+mycols&lt;-c(&quot;#619CFF&quot;,&quot;#F8766D&quot;,&quot;#00BA38&quot;)
+names(mycols)&lt;-c(&quot;-1 sd&quot;,&quot;mean&quot;,&quot;+1 sd&quot;)
+mycols=as.factor(mycols)
+
+ggplot(data,aes(maxbench_c,bodyweight),group=mycols)+geom_point()+geom_line(data=new1,aes(y=mean,color=&quot;mean&quot;))+geom_line(data=new1,aes(y=plus.sd,color=&quot;+1 sd&quot;))+geom_line(data=new1,aes(y=minus.sd,color=&quot;-1 sd&quot;))+scale_color_manual(values=mycols)+labs(color=&quot;Max squat&quot;)+theme(legend.position=c(.9,.2))</code></pre>
+<p><img src="/Project2_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<pre class="r"><code>##qplot
+qplot(x = maxbench_c, y = bodyweight, color = maxsquat_c, data = data) +
+  stat_smooth(method = &quot;lm&quot;, se = FALSE, fullrange = TRUE)</code></pre>
+<p><img src="/Project2_files/figure-html/unnamed-chunk-4-2.png" width="672" /></p>
+<pre class="r"><code>##linearity/ homoskedastity
+resids&lt;-fit2$residuals
+fitvals&lt;-fit2$fitted.values
+ggplot()+geom_point(aes(fitvals,resids))+geom_hline(yintercept=0, color=&#39;red&#39;)</code></pre>
+<p><img src="/Project2_files/figure-html/unnamed-chunk-4-3.png" width="672" /></p>
+<pre class="r"><code>#normality
+ggplot()+geom_histogram(aes(resids), bins=20)</code></pre>
+<p><img src="/Project2_files/figure-html/unnamed-chunk-4-4.png" width="672" /></p>
+<pre class="r"><code>ggplot()+geom_qq(aes(sample=resids))+geom_qq_line(aes(sample=resids))</code></pre>
+<p><img src="/Project2_files/figure-html/unnamed-chunk-4-5.png" width="672" /></p>
+<pre class="r"><code>##robust SE
+library(sandwich)
+library(lmtest)</code></pre>
+<pre><code>## Loading required package: zoo</code></pre>
+<pre><code>## 
+## Attaching package: &#39;zoo&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:base&#39;:
+## 
+##     as.Date, as.Date.numeric</code></pre>
+<pre class="r"><code>bptest(fit2)</code></pre>
+<pre><code>## 
+##  studentized Breusch-Pagan test
+## 
+## data:  fit2
+## BP = 595.01, df = 3, p-value &lt; 2.2e-16</code></pre>
+<pre class="r"><code>coeftest(fit2, vcov = vcovHC(fit2))</code></pre>
+<pre><code>## 
+## t test of coefficients:
+## 
+##                         Estimate Std. Error  t value  Pr(&gt;|t|)    
+## (Intercept)           7.9033e+01 1.4469e-01 546.2405 &lt; 2.2e-16 ***
+## maxsquat_c            1.1588e-01 4.6289e-03  25.0330 &lt; 2.2e-16 ***
+## maxbench_c            1.6121e-01 6.1768e-03  26.0995 &lt; 2.2e-16 ***
+## maxsquat_c:maxbench_c 1.9214e-04 2.3079e-05   8.3253 &lt; 2.2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>### what proportion of the variation in outcome does the model explain??
+
+##regression re-ran without interaction
+fit3&lt;-lm(bodyweight~maxsquat_c+maxbench_c, data=data)
+summary(fit3)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = bodyweight ~ maxsquat_c + maxbench_c, data = data)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -47.201 -11.266  -2.689   8.574 115.662 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) 79.775898   0.109256  730.18   &lt;2e-16 ***
+## maxsquat_c   0.113956   0.003719   30.64   &lt;2e-16 ***
+## maxbench_c   0.169614   0.004914   34.52   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 16.8 on 23629 degrees of freedom
+## Multiple R-squared:  0.526,  Adjusted R-squared:  0.526 
+## F-statistic: 1.311e+04 on 2 and 23629 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="r"><code>##compare two models
+anova(fit2,fit3,test=&quot;LRT&quot;)</code></pre>
+<pre><code>## Analysis of Variance Table
+## 
+## Model 1: bodyweight ~ maxsquat_c * maxbench_c
+## Model 2: bodyweight ~ maxsquat_c + maxbench_c
+##   Res.Df     RSS Df Sum of Sq  Pr(&gt;Chi)    
+## 1  23628 6644286                           
+## 2  23629 6665515 -1    -21229 &lt; 2.2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>The linear regression I performed predicted body weight in kilograms from maximum squat weight and maximum bench press weight. The null and alternative hypthesis’ for the GLM are Ho: There is no interaction between max squat weight and max bench press weight on body weight. The alternative Ha: There is an interaction between max squat weight and max bench press weight on body weight. The intercepts can be interpreted as: for every 1 kg increase in max squat weight, body weight increases by an average of 1.159e-01 kilograms. Also, for every 1 kg increase in maximum bench press, body weight increases by 1.612e-01 kgs. The interaction shows that for every 1kg increase in both max bench and max squat, body weight increases by 1.921e-04 kgs.</p>
+<p>I checked the assumptions for linearity, homoskedasticity, and normality graphically. Linearity and homoskedasticity were checked by plotted the fitvals by the resids using ggplot. Both of these assumptions were met. Next, I checked the assumption of normality by making a histogram of the residuals and by making a line graph of the theoretical vs. sample. The normality assumption was met.</p>
+<p>After checking the assumptions, I next recomputed the regression using the results with robust standard errors using coeftest. The results slightly differed from before using the robust standard errors. The new standard error values were all larger than the standard error values before, but this did not change the significance of any of the predictors. My model explained 52.75% of the variation in outcome as calculated from the adjusted R-squared value.
+###4. (5 pts)Linear Regression Model with Bootstrapped SEs</p>
+<pre class="r"><code>sample_distn&lt;-replicate(1000, {
+  boot_dat&lt;-boot_dat&lt;-data[sample(nrow(data), replace=TRUE),]
+  fit6&lt;-lm(bodyweight~maxsquat_c*maxbench_c, data=boot_dat)
+  coef(fit6)
+})
+
+sample_distn%&gt;%t%&gt;%as.data.frame%&gt;%summarize_all(sd)</code></pre>
+<pre><code>##   (Intercept)  maxsquat_c  maxbench_c maxsquat_c:maxbench_c
+## 1    0.144409 0.004701991 0.006200236          2.282915e-05</code></pre>
+<p>Next, I reran the same regression with the bootstrapped standard errors. These standard errors are slightly different than the original and the robust SE values. The bootstrapped SE for the intercept was 0.146, while the original was 0.139. The max squat SE for the bootstrap was 0.00465 while the SE for the original was 0.0037. The max bench bootstrapped SE was 0.00614 while the original was 0.005. Lastly the bootstrapped SE for the interaction was 2.343e-05, while the original was 2.21e-05. So overall, the bootstrapped standard errors were all slightly higher than the original standard errors. Compared to the robust standard errors, the bootstrapped standard errors were all very close. The p-values were still under 0.05 when using the bootstrapped standard errors.</p>
+<p>###5. (40 pts) Logistic Regression</p>
+<pre class="r"><code>data2&lt;-data%&gt;%mutate(y=ifelse(sex==&quot;M&quot;, 1,0))
+fit5&lt;-glm(y~bodyweight+maxsquat, data=data2, family=binomial)
+summary(fit5)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = y ~ bodyweight + maxsquat, family = binomial, data = data2)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -3.1970  -0.5605   0.1738   0.5566   2.9244  
+## 
+## Coefficients:
+##               Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept) -6.2115613  0.0933443 -66.545  &lt; 2e-16 ***
+## bodyweight   0.0042871  0.0011709   3.661 0.000251 ***
+## maxsquat     0.0333832  0.0005073  65.806  &lt; 2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 30705  on 23631  degrees of freedom
+## Residual deviance: 17693  on 23629  degrees of freedom
+## AIC: 17699
+## 
+## Number of Fisher Scoring iterations: 6</code></pre>
+<pre class="r"><code>exp(coef(fit5))</code></pre>
+<pre><code>## (Intercept)  bodyweight    maxsquat 
+## 0.002006103 1.004296353 1.033946651</code></pre>
+<pre class="r"><code>##confusion-matrix
+prob&lt;-predict(fit5, type=&quot;response&quot;)
+table(predict=as.numeric(prob&gt;.5), truth=data2$y)%&gt;%addmargins</code></pre>
+<pre><code>##        truth
+## predict     0     1   Sum
+##     0    6290  1814  8104
+##     1    2066 13462 15528
+##     Sum  8356 15276 23632</code></pre>
+<pre class="r"><code>#accuracy
+(6290+13262)/23632</code></pre>
+<pre><code>## [1] 0.8273527</code></pre>
+<pre class="r"><code>#tnr (specificity)
+(6290)/8140</code></pre>
+<pre><code>## [1] 0.7727273</code></pre>
+<pre class="r"><code>#tpr (sensitivity aka recall)
+(13262)/15528</code></pre>
+<pre><code>## [1] 0.8540701</code></pre>
+<pre class="r"><code>#ppv (precision)
+(13462)/(15276)</code></pre>
+<pre><code>## [1] 0.8812516</code></pre>
+<pre class="r"><code>## density of log-odds ggplot (logit)
+
+data2$y &lt;-as.factor(data2$y)
+data2$logit&lt;-predict(fit5, type=&quot;link&quot;)
+data2%&gt;%ggplot()+geom_density(aes(logit, color=y, fill=y), alpha=.4)+geom_vline(xintercept = 0)+xlab(&quot;predictor (logit)&quot;)</code></pre>
+<p><img src="/Project2_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<pre class="r"><code>##ROC Curve
+library(plotROC)
+prob3&lt;-predict(fit5, type=&quot;response&quot;)
+ROCplot3&lt;-ggplot(data2)+geom_roc(aes(d=sex,m=prob3), n.cuts=0)+geom_segment(aes(x=0, xend=1, y=0, yend=1), lty=2)
+ROCplot3</code></pre>
+<pre><code>## Warning in verify_d(data$d): D not labeled 0/1, assuming F = 0 and M = 1!</code></pre>
+<p><img src="/Project2_files/figure-html/unnamed-chunk-6-2.png" width="672" /></p>
+<pre class="r"><code>calc_auc(ROCplot3)</code></pre>
+<pre><code>## Warning in verify_d(data$d): D not labeled 0/1, assuming F = 0 and M = 1!</code></pre>
+<pre><code>##   PANEL group       AUC
+## 1     1    -1 0.9033721</code></pre>
+<pre class="r"><code>##10 fold CV
+class_diag&lt;-function(probs,truth){
+ tab&lt;-table(factor(probs&gt;.5,levels=c(&quot;FALSE&quot;,&quot;TRUE&quot;)),truth)
+ acc=sum(diag(tab))/sum(tab)
+ sens=tab[2,2]/colSums(tab)[2]
+ spec=tab[1,1]/colSums(tab)[1]
+ ppv=tab[2,2]/rowSums(tab)[2]
+ if(is.numeric(truth)==FALSE &amp; is.logical(truth)==FALSE) truth&lt;-as.numeric(truth)-1
+ #CALCULATE EXACT AUC
+ ord&lt;-order(probs, decreasing=TRUE)
+ probs &lt;- probs[ord]; truth &lt;- truth[ord]
+ TPR=cumsum(truth)/max(1,sum(truth))
+ FPR=cumsum(!truth)/max(1,sum(!truth))
+ dup&lt;-c(probs[-1]&gt;=probs[-length(probs)], FALSE)
+ TPR&lt;-c(0,TPR[!dup],1); FPR&lt;-c(0,FPR[!dup],1)
+ n &lt;- length(TPR)
+ auc&lt;- sum( ((TPR[-1]+TPR[-n])/2) * (FPR[-1]-FPR[-n]) )
+ data.frame(acc,sens,spec,ppv,auc)
+} 
+set.seed(1234)
+k=10 
+datap&lt;-data2[sample(nrow(data2)),] 
+folds&lt;-cut(seq(1:nrow(data2)),breaks=k,labels=F) 
+diags&lt;-NULL
+for(i in 1:k){
+ 
+ train&lt;-datap[folds!=i,]
+ test&lt;-datap[folds==i,]
+ truth&lt;-test$y
+
+ fit&lt;-glm(y~bodyweight+maxsquat,data=train,family=&quot;binomial&quot;)
+ probs&lt;-predict(fit,newdata = test,type=&quot;response&quot;)
+
+ diags&lt;-rbind(diags,class_diag(probs,truth))
+}
+
+apply(diags,2, mean)</code></pre>
+<pre><code>##       acc      sens      spec       ppv       auc 
+## 0.8358154 0.8814142 0.7524740 0.8667990 0.9033105</code></pre>
+<p>I choose to perform a logistic regression predicting sex from body weight and max squat weight. Sex was binary, with males=1 and females =0. Based on the results, there is a signficant effect of body weight and max squat weight on predicting whether or not the athlete was male. (p&lt;0.05). The coefficients can be interpreted using log. For every one kg increase in body weight multiplies the odds of being male by 1.004296. Also, for every 1 kg increase in squat weight multiplies the odds of being male by 1.033947.</p>
+<p>After making a confusion matrix, I computed the accuracy to be 0.827, the sensitivity to be 0.854, the specificity to be 0.773, and finally the PPV was 0.881. The accuracy is the proportion of correctly classified cases, so an accuracy of 0.827 is pretty good. Sensitivity or true positive rate was the proportion of men identified correctly, so again 0.854 is good as well. Specificity was the proportion of women correctly classified and it was 0.881 which is good too. I next used ggplot to plot density of log-odds(logit) by my primary outcome variable (gender). Overall, the accuracy, sensitivity, specificity, and precision were all pretty high.</p>
+<p>Next I generated a ROC curve. I calculated the AUC, or the area under the curve to be 0.903. The AUC quantifies how well we are at predicting sex from body weight and max squat weight. An AUC of 0.903 is pretty good at predicting the outcome!Next, I performed the 10-fold cross variation. The accuracy was 0.836. The sensitivity was 0.881. The specificity was 0.752. The ppv was 0.867. The AUC, or the area under the curve was 0.903.
+###6. (10 pts) LASSO</p>
+<pre class="r"><code>library(glmnet)</code></pre>
+<pre><code>## Loading required package: Matrix</code></pre>
+<pre><code>## 
+## Attaching package: &#39;Matrix&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:tidyr&#39;:
+## 
+##     expand, pack, unpack</code></pre>
+<pre><code>## Loaded glmnet 3.0-2</code></pre>
+<pre class="r"><code>library(dplyr)
+select&lt;-dplyr::select 
+lassdata&lt;-data4%&gt;%mutate(y=ifelse(sex==&quot;M&quot;, 1,0))
+lassdata&lt;-lassdata%&gt;%select(-sex)
+
+fit_lass&lt;-lm(y~.,data=lassdata)
+yhat&lt;-predict(fit_lass)
+mean((lassdata$y-yhat)^2) </code></pre>
+<pre><code>## [1] 0.1065739</code></pre>
+<pre class="r"><code>y&lt;-as.matrix(lassdata$y)
+x &lt;- model.matrix(y~ ., data =lassdata)
+cv&lt;-cv.glmnet(x,y, family=&#39;binomial&#39;) 
+lasso1&lt;-glmnet(x,y,family=&quot;binomial&quot;,lambda=cv$lambda.1se)
+coef(lasso1)</code></pre>
+<pre><code>## 8 x 1 sparse Matrix of class &quot;dgCMatrix&quot;
+##                              s0
+## (Intercept)         -8.51142707
+## (Intercept)          .         
+## bodyweight          -0.01267629
+## maxsquat            -0.01165164
+## maxbench             0.02897653
+## maxdead              0.04541496
+## equipmentSingle-ply -0.30731354
+## equipmentWraps       0.58002136</code></pre>
+<pre class="r"><code>lass1&lt;-rownames(coef(lasso1))[which(coef(lasso1)!=0)]
+select&lt;-dplyr::select
+lassdata1&lt;-x%&gt;% as.data.frame%&gt;%select(lass1)%&gt;%mutate(y=lassdata$y)
+
+set.seed(1234)
+k=10
+
+data88&lt;-lassdata1[sample(nrow(lassdata)),]
+folds88&lt;-cut(seq(1:nrow(lassdata)), breaks=k, labels=FALSE)
+
+diags88&lt;-NULL
+for(i in 1:k){
+  train88&lt;-data88[folds88!=i,]
+  test88&lt;-data88[folds88==i,]
+  truth88&lt;-test88$y
+  fit88&lt;-glm(y~., data=train88, family=&quot;binomial&quot;)
+  probs88&lt;-predict(fit88, newdata=test88, type=&quot;response&quot;)
+  preds88&lt;-ifelse(probs88&gt;0.5, 1, 0)
+  diags88&lt;-rbind(diags88, class_diag(probs88, truth88))
+}</code></pre>
+<pre><code>## Warning in predict.lm(object, newdata, se.fit, scale = 1, type = if (type
+## == : prediction from a rank-deficient fit may be misleading
+
+## Warning in predict.lm(object, newdata, se.fit, scale = 1, type = if (type
+## == : prediction from a rank-deficient fit may be misleading
+
+## Warning in predict.lm(object, newdata, se.fit, scale = 1, type = if (type
+## == : prediction from a rank-deficient fit may be misleading
+
+## Warning in predict.lm(object, newdata, se.fit, scale = 1, type = if (type
+## == : prediction from a rank-deficient fit may be misleading
+
+## Warning in predict.lm(object, newdata, se.fit, scale = 1, type = if (type
+## == : prediction from a rank-deficient fit may be misleading
+
+## Warning in predict.lm(object, newdata, se.fit, scale = 1, type = if (type
+## == : prediction from a rank-deficient fit may be misleading
+
+## Warning in predict.lm(object, newdata, se.fit, scale = 1, type = if (type
+## == : prediction from a rank-deficient fit may be misleading
+
+## Warning in predict.lm(object, newdata, se.fit, scale = 1, type = if (type
+## == : prediction from a rank-deficient fit may be misleading
+
+## Warning in predict.lm(object, newdata, se.fit, scale = 1, type = if (type
+## == : prediction from a rank-deficient fit may be misleading
+
+## Warning in predict.lm(object, newdata, se.fit, scale = 1, type = if (type
+## == : prediction from a rank-deficient fit may be misleading</code></pre>
+<pre class="r"><code>apply(diags88,2, mean)</code></pre>
+<pre><code>##       acc      sens      spec       ppv       auc 
+## 0.8865841 0.9116155 0.8407004 0.9130755 0.9525559</code></pre>
+<p>I choose to predict sex from all of the other variables in the dataset using a LASSO regression. To my suprise, all of the variables were retained as they all had non-zero LASSO coefficients. This makes sense though, as the amount of weight you can lift in any exercise most likely can predict whether or not an athlete was male or female, as males typically lift more. The accuracy was 0.887. The sensitivity was 0.912. The specificity was 0.842. The ppv was 0.914, and the AUC was 0.953. Compared to the results from #5, the accuracy is slightly higher. The accuracy from #5 was 0.836 and this accuracy was 0.887. All of the statistics were higher than the results from #5 which makes sense as only the best predictors were used to predict sex. The area under the curve value of 0.953 is a great AUC.</p>
+</div>
+
+              <hr>
+              <div class="related-posts">
+                <h5>Related Posts</h5>
+                
+              </div>
+            </div>
+          </div>
+          <hr>
+        <div class="disqus">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+
+    (function() {
+      
+      
+      if (window.location.hostname == "localhost")
+        return;
+
+      var disqus_shortname = '';
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+        </div>
+      </div>
+      
+    </div>
+
+    
+    <footer>
+  <div id="footer">
+    <div class="container">
+      <p class="text-muted">&copy; All rights reserved. Powered by <a href="https://gohugo.io/">Hugo</a> and
+      <a href="http://www.github.com/nurlansu/hugo-sustain/">sustain</a> with ♥</p>
+    </div>
+  </div>
+</footer>
+<div class="footer"></div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="/js/docs.min.js"></script>
+<script src="/js/main.js"></script>
+
+<script src="/js/ie10-viewport-bug-workaround.js"></script>
+
+
+    
+  </body>
+</html>

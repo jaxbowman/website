@@ -1,0 +1,628 @@
+---
+title: 'Project 1: Exploratory Analysis'
+author: "Jaxon Bowman"
+date: "10/20/2019"
+output:
+  pdf_document: default
+  word_document: default
+  html_document: default
+---
+
+
+
+<div id="project-1-exploratory-analysis" class="section level2">
+<h2>Project 1: Exploratory Analysis</h2>
+</div>
+<div id="introduction" class="section level2">
+<h2>Introduction:</h2>
+<p>For this project, I choose to combine three datasets by the variable, country. The first dataset I choose was about Global Plastic Waste, and I obtained it from GitHub’s #tidytuesday project. This dataset includes the per capita mismanaged plastic waste, GDP per capita, country, country code, year, and total population. I choose this dataset because I am interested in sustainability and the environment, and I thought it would be facinating to observe the varying mismanaged waste among countries. The next dataset I choose was about the Sanitation Percents for varying countries. I got this dataset from “The World Bank- Data Bank/World Development Indicators”. This dataset included the percentages of Urban Populations using basic sanitation services for different countries in the year 2010. As I am interested in global health and medicine, this dataset stood out to me. I thought it would be interesting to compare Sanitation Percentages to Plastic Waste and GDP per capita. Lastly, I included one more dataset that about which countries have laws regarding equal pay for different genders and which countries do not have these kinds of laws. Again, I got this dataset from “The World Bank-DataBank World Development Indicators.” I choose to add this one in because I am interested in women’s rights and because I wanted to include a non-numerical column in the combined datasets. The second and third datasets were both from the year 2010, and I selected to only use the year 2010 from the first dataset. From this data, I would expect there to be an association between Sanitation Percent and GDP per capita, with them being positively correlated. Also I am expecting there to be an association between Plastic Waste and Sanitation Percent, with them possibly being negatively correlated. It could be possible that more developed countries with greater Sanitation Percents have more mismanaged waste.</p>
+</div>
+<div id="tidying-rearranging-widelong" class="section level2">
+<h2>1. Tidying: Rearranging Wide/Long</h2>
+<pre class="r"><code>#1 Tidying
+mismanaged_vs_gdp &lt;- readr::read_csv(&quot;https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-05-21/per-capita-mismanaged-plastic-waste-vs-gdp-per-capita.csv&quot;)</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   Entity = col_character(),
+##   Code = col_character(),
+##   Year = col_double(),
+##   `Per capita mismanaged plastic waste (kilograms per person per day)` = col_double(),
+##   `GDP per capita, PPP (constant 2011 international $) (Rate)` = col_double(),
+##   `Total population (Gapminder)` = col_double()
+## )</code></pre>
+<pre class="r"><code>SAN2&lt;- read.csv(&quot;/Users/jaxonbowman/Desktop/website/content/SanitationData.csv&quot;)
+LAW2 &lt;-read.csv(&quot;/Users/jaxonbowman/Desktop/website/content/lawre.csv&quot;)
+nonawaste&lt;-mismanaged_vs_gdp%&gt;%na.omit()%&gt;%glimpse()</code></pre>
+<pre><code>## Observations: 145
+## Variables: 6
+## $ Entity                                                               &lt;chr&gt; …
+## $ Code                                                                 &lt;chr&gt; …
+## $ Year                                                                 &lt;dbl&gt; …
+## $ `Per capita mismanaged plastic waste (kilograms per person per day)` &lt;dbl&gt; …
+## $ `GDP per capita, PPP (constant 2011 international $) (Rate)`         &lt;dbl&gt; …
+## $ `Total population (Gapminder)`                                       &lt;dbl&gt; …</code></pre>
+<pre class="r"><code>names(nonawaste)[4]&lt;- &quot;waste&quot;
+names(nonawaste)[5]&lt;-&quot;gdp&quot;
+names(nonawaste)[6]&lt;-&quot;pop&quot;
+
+nonawaste2&lt;-nonawaste%&gt;%select(-&quot;Entity&quot;,-&quot;gdp&quot;,-&quot;pop&quot;)%&gt;%glimpse()</code></pre>
+<pre><code>## Observations: 145
+## Variables: 3
+## $ Code  &lt;chr&gt; &quot;ALB&quot;, &quot;DZA&quot;, &quot;AGO&quot;, &quot;ATG&quot;, &quot;ARG&quot;, &quot;AUS&quot;, &quot;BHS&quot;, &quot;BHR&quot;, &quot;B…
+## $ Year  &lt;dbl&gt; 2010, 2010, 2010, 2010, 2010, 2010, 2010, 2010, 2010, 2010…
+## $ waste &lt;dbl&gt; 0.032, 0.086, 0.045, 0.051, 0.026, 0.002, 0.011, 0.016, 0.…</code></pre>
+<pre class="r"><code>untidywaste2&lt;-nonawaste2%&gt;%pivot_wider(names_from = Code, values_from = waste)%&gt;%head()
+tidywaste2&lt;-untidywaste2%&gt;%pivot_longer(2:146,names_to=&quot;Code&quot;, values_to =&quot;waste&quot;)%&gt;%glimpse()</code></pre>
+<pre><code>## Observations: 145
+## Variables: 3
+## $ Year  &lt;dbl&gt; 2010, 2010, 2010, 2010, 2010, 2010, 2010, 2010, 2010, 2010…
+## $ Code  &lt;chr&gt; &quot;ALB&quot;, &quot;DZA&quot;, &quot;AGO&quot;, &quot;ATG&quot;, &quot;ARG&quot;, &quot;AUS&quot;, &quot;BHS&quot;, &quot;BHR&quot;, &quot;B…
+## $ waste &lt;dbl&gt; 0.032, 0.086, 0.045, 0.051, 0.026, 0.002, 0.011, 0.016, 0.…</code></pre>
+<p>To begin, each of my data sets were already tidy other than me needing to delete a few extraneous columns. So, to demostrate my tidying skills, I used pivot_wider on the mismanaged_vs_gdp dataset to reshape the dataset from long to wide. I first removed a few columns and then used pivot_wider with names_from= Code, and values_from= waste to make an extra long dataset. I named this dataset “untidywaste2”. Next, I used pivot_longer to tidy the dataset. I named the newly tidy dataset “tidywaste2”.</p>
+</div>
+<div id="joiningmerging" class="section level2">
+<h2>2. Joining/Merging</h2>
+<pre class="r"><code>SAN &lt;- SAN2%&gt;%select(-&quot;Series.Name&quot;, -&quot;Series.Code&quot;)%&gt;%glimpse()</code></pre>
+<pre><code>## Observations: 269
+## Variables: 3
+## $ Country.Name   &lt;fct&gt; &quot;Afghanistan&quot;, &quot;Albania&quot;, &quot;Algeria&quot;, &quot;American Sa…
+## $ Country.Code   &lt;fct&gt; AFG, ALB, DZA, ASM, AND, AGO, ATG, ARG, ARM, ABW,…
+## $ X2010..YR2010. &lt;dbl&gt; 46.49688, 97.97665, 90.23560, NA, 100.00000, 57.4…</code></pre>
+<pre class="r"><code>names(SAN)[1]&lt;-&quot;Country Name&quot;
+names(SAN)[2]&lt;-&quot;Country Code&quot;
+names(SAN)[3]&lt;-&quot;Sanitation Percent&quot;
+
+LAW &lt;-LAW2%&gt;%select(-&quot;Series.Name&quot;, -&quot;Series.Code&quot;, -&quot;Country.Code&quot;)%&gt;%glimpse()</code></pre>
+<pre><code>## Observations: 269
+## Variables: 2
+## $ Country.Name &lt;fct&gt; &quot;Afghanistan&quot;, &quot;Albania&quot;, &quot;Algeria&quot;, &quot;American Samo…
+## $ X2010        &lt;int&gt; 0, 0, 1, NA, NA, 1, 0, 1, 0, NA, 1, 1, 0, 0, 0, 0, …</code></pre>
+<pre class="r"><code>names(LAW)[1]&lt;-&quot;Country Name&quot;
+names(LAW)[2]&lt;-&quot;Equal gender pay (0=NO, 1=YES)&quot;
+
+plasticgdp &lt;-mismanaged_vs_gdp%&gt;%select(-&quot;Code&quot;)%&gt;%glimpse()</code></pre>
+<pre><code>## Observations: 22,204
+## Variables: 5
+## $ Entity                                                               &lt;chr&gt; …
+## $ Year                                                                 &lt;dbl&gt; …
+## $ `Per capita mismanaged plastic waste (kilograms per person per day)` &lt;dbl&gt; …
+## $ `GDP per capita, PPP (constant 2011 international $) (Rate)`         &lt;dbl&gt; …
+## $ `Total population (Gapminder)`                                       &lt;dbl&gt; …</code></pre>
+<pre class="r"><code>plasticgdp2 &lt;-plasticgdp%&gt;%filter(Year==&quot;2010&quot;)%&gt;%glimpse()</code></pre>
+<pre><code>## Observations: 282
+## Variables: 5
+## $ Entity                                                               &lt;chr&gt; …
+## $ Year                                                                 &lt;dbl&gt; …
+## $ `Per capita mismanaged plastic waste (kilograms per person per day)` &lt;dbl&gt; …
+## $ `GDP per capita, PPP (constant 2011 international $) (Rate)`         &lt;dbl&gt; …
+## $ `Total population (Gapminder)`                                       &lt;dbl&gt; …</code></pre>
+<pre class="r"><code>names(plasticgdp2)[1]&lt;-&quot;Country Name&quot;
+sang &lt;-SAN %&gt;%na.omit()%&gt;%glimpse()</code></pre>
+<pre><code>## Observations: 218
+## Variables: 3
+## $ `Country Name`       &lt;fct&gt; Afghanistan, Albania, Algeria, Andorra, Ang…
+## $ `Country Code`       &lt;fct&gt; AFG, ALB, DZA, AND, AGO, ARG, ARM, AUT, AZE…
+## $ `Sanitation Percent` &lt;dbl&gt; 46.49688, 97.97665, 90.23560, 100.00000, 57…</code></pre>
+<pre class="r"><code>plasticg&lt;-plasticgdp2%&gt;%na.omit()%&gt;%glimpse()</code></pre>
+<pre><code>## Observations: 145
+## Variables: 5
+## $ `Country Name`                                                       &lt;chr&gt; …
+## $ Year                                                                 &lt;dbl&gt; …
+## $ `Per capita mismanaged plastic waste (kilograms per person per day)` &lt;dbl&gt; …
+## $ `GDP per capita, PPP (constant 2011 international $) (Rate)`         &lt;dbl&gt; …
+## $ `Total population (Gapminder)`                                       &lt;dbl&gt; …</code></pre>
+<pre class="r"><code>lawg &lt;-LAW%&gt;%na.omit()%&gt;%glimpse()</code></pre>
+<pre><code>## Observations: 186
+## Variables: 2
+## $ `Country Name`                   &lt;fct&gt; &quot;Afghanistan&quot;, &quot;Albania&quot;, &quot;Alge…
+## $ `Equal gender pay (0=NO, 1=YES)` &lt;int&gt; 0, 0, 1, 1, 0, 1, 0, 1, 1, 0, 0…</code></pre>
+<pre class="r"><code>jointdata&lt;-sang %&gt;%inner_join(plasticg, by=&quot;Country Name&quot;)%&gt;%glimpse()</code></pre>
+<pre><code>## Warning: Column `Country Name` joining factor and character vector,
+## coercing into character vector</code></pre>
+<pre><code>## Observations: 112
+## Variables: 7
+## $ `Country Name`                                                       &lt;chr&gt; …
+## $ `Country Code`                                                       &lt;fct&gt; …
+## $ `Sanitation Percent`                                                 &lt;dbl&gt; …
+## $ Year                                                                 &lt;dbl&gt; …
+## $ `Per capita mismanaged plastic waste (kilograms per person per day)` &lt;dbl&gt; …
+## $ `GDP per capita, PPP (constant 2011 international $) (Rate)`         &lt;dbl&gt; …
+## $ `Total population (Gapminder)`                                       &lt;dbl&gt; …</code></pre>
+<pre class="r"><code>alldata&lt;-jointdata%&gt;%inner_join(lawg, by=&quot;Country Name&quot;)%&gt;%glimpse()</code></pre>
+<pre><code>## Warning: Column `Country Name` joining character vector and factor,
+## coercing into character vector</code></pre>
+<pre><code>## Observations: 109
+## Variables: 8
+## $ `Country Name`                                                       &lt;chr&gt; …
+## $ `Country Code`                                                       &lt;fct&gt; …
+## $ `Sanitation Percent`                                                 &lt;dbl&gt; …
+## $ Year                                                                 &lt;dbl&gt; …
+## $ `Per capita mismanaged plastic waste (kilograms per person per day)` &lt;dbl&gt; …
+## $ `GDP per capita, PPP (constant 2011 international $) (Rate)`         &lt;dbl&gt; …
+## $ `Total population (Gapminder)`                                       &lt;dbl&gt; …
+## $ `Equal gender pay (0=NO, 1=YES)`                                     &lt;int&gt; …</code></pre>
+<pre class="r"><code>head(alldata)</code></pre>
+<pre><code>##   Country Name Country Code Sanitation Percent Year
+## 1      Albania          ALB           97.97665 2010
+## 2      Algeria          DZA           90.23560 2010
+## 3       Angola          AGO           57.40339 2010
+## 4    Argentina          ARG           94.35405 2010
+## 5   Bangladesh          BGD           48.68775 2010
+## 6      Belgium          BEL           99.48613 2010
+##   Per capita mismanaged plastic waste (kilograms per person per day)
+## 1                                                              0.032
+## 2                                                              0.086
+## 3                                                              0.045
+## 4                                                              0.026
+## 5                                                              0.030
+## 6                                                              0.002
+##   GDP per capita, PPP (constant 2011 international $) (Rate)
+## 1                                                   9927.182
+## 2                                                  12870.603
+## 3                                                   5897.683
+## 4                                                  18712.063
+## 5                                                   2442.729
+## 6                                                  41085.919
+##   Total population (Gapminder) Equal gender pay (0=NO, 1=YES)
+## 1                      3204284                              0
+## 2                     35468208                              1
+## 3                     19081912                              1
+## 4                     40412376                              1
+## 5                    148692131                              0
+## 6                     10712066                              1</code></pre>
+<p>In the process of joining the datasets, I first had to delete extraneous columns that appears in some of the datasets. To begin, I deleted “Series Name” and “Series Code” from the Sanitation dataset using the filter function. Next, I deleted “Series Name”, “Series Code”, and “Country Code” from the Law about equal gender pay dataset. Finally, I deleted “Code” from the mismanaged plastic dataset. After cleaning these datasets up and getting rid of the NAs, I joined them using inner_join. I first joined the mismanaged plastic waste dataset to the sanitation dataset and then I joined the law dataset to that one and I named it “alldata”. I choose to use inner_join because it drops any rows in either dataset without a match, only keeping rows that have a match on the ID variables. I joined the three datasets by “Country Name”. Another reason I choose inner_join was so that no additonal NAs would be introduced and the results would contain the number of rows equal to the intersection of IDs. 114 cases were dropped during the process of first joining the Sanitation Data to the Mismanaged Plastic Waste Data. These cases were dropped as they did not have values for each column in the newly combined dataset called “alldata” and inner_join does not introduce and NAs. When that new dataset “joindata” with Laws regarding equal gender pay dataset, 2 cases were dropped. Again, these three cases were countries that did not match up with the newly combined dataset.</p>
+</div>
+<div id="wrangling" class="section level2">
+<h2>3. Wrangling</h2>
+<pre class="r"><code>#Wrangling
+names(alldata)[5] &lt;- &quot;Plastic Waste (kg/person/day)&quot;
+names(alldata)[6]&lt;- &quot;GDP per capita&quot;
+names(alldata)[7]&lt;- &quot;Population&quot;
+names(alldata)[8]&lt;- &quot;Law for equal gender pay (0=NO, 1=YES)&quot;
+alldata1 &lt;-alldata%&gt;% mutate(GDP=`GDP per capita`*Population)%&gt;%glimpse()</code></pre>
+<pre><code>## Observations: 109
+## Variables: 9
+## $ `Country Name`                           &lt;chr&gt; &quot;Albania&quot;, &quot;Algeria&quot;, &quot;…
+## $ `Country Code`                           &lt;fct&gt; ALB, DZA, AGO, ARG, BGD…
+## $ `Sanitation Percent`                     &lt;dbl&gt; 97.97665, 90.23560, 57.…
+## $ Year                                     &lt;dbl&gt; 2010, 2010, 2010, 2010,…
+## $ `Plastic Waste (kg/person/day)`          &lt;dbl&gt; 0.032, 0.086, 0.045, 0.…
+## $ `GDP per capita`                         &lt;dbl&gt; 9927.182, 12870.603, 58…
+## $ Population                               &lt;dbl&gt; 3204284, 35468208, 1908…
+## $ `Law for equal gender pay (0=NO, 1=YES)` &lt;int&gt; 0, 1, 1, 1, 0, 1, 0, 1,…
+## $ GDP                                      &lt;dbl&gt; 3.180951e+10, 4.564972e…</code></pre>
+<pre class="r"><code>alldata1%&gt;%arrange(desc(`Sanitation Percent`))%&gt;%glimpse()</code></pre>
+<pre><code>## Observations: 109
+## Variables: 9
+## $ `Country Name`                           &lt;chr&gt; &quot;Israel&quot;, &quot;New Zealand&quot;…
+## $ `Country Code`                           &lt;fct&gt; ISR, NZL, SGP, USA, MLT…
+## $ `Sanitation Percent`                     &lt;dbl&gt; 100.00000, 100.00000, 1…
+## $ Year                                     &lt;dbl&gt; 2010, 2010, 2010, 2010,…
+## $ `Plastic Waste (kg/person/day)`          &lt;dbl&gt; 0.008, 0.007, 0.004, 0.…
+## $ `GDP per capita`                         &lt;dbl&gt; 29743.006, 32119.216, 7…
+## $ Population                               &lt;dbl&gt; 7418400, 4368136, 50864…
+## $ `Law for equal gender pay (0=NO, 1=YES)` &lt;int&gt; 1, 0, 0, 0, 1, 1, 0, 1,…
+## $ GDP                                      &lt;dbl&gt; 2.206455e+11, 1.403011e…</code></pre>
+<pre class="r"><code>alldata1%&gt;%arrange(`Sanitation Percent`)%&gt;%glimpse()</code></pre>
+<pre><code>## Observations: 109
+## Variables: 9
+## $ `Country Name`                           &lt;chr&gt; &quot;Madagascar&quot;, &quot;Ghana&quot;, …
+## $ `Country Code`                           &lt;fct&gt; MDG, GHA, ERI, SLE, BEN…
+## $ `Sanitation Percent`                     &lt;dbl&gt; 14.07917, 19.39335, 22.…
+## $ Year                                     &lt;dbl&gt; 2010, 2010, 2010, 2010,…
+## $ `Plastic Waste (kg/person/day)`          &lt;dbl&gt; 0.013, 0.032, 0.035, 0.…
+## $ `GDP per capita`                         &lt;dbl&gt; 1385.6851, 3059.3836, 1…
+## $ Population                               &lt;dbl&gt; 20713819, 24391823, 525…
+## $ `Law for equal gender pay (0=NO, 1=YES)` &lt;int&gt; 0, 0, 0, 0, 1, 1, 0, 1,…
+## $ GDP                                      &lt;dbl&gt; 28702829766, 7462394390…</code></pre>
+<pre class="r"><code>alldata1%&gt;%arrange(desc(GDP))%&gt;%glimpse()</code></pre>
+<pre><code>## Observations: 109
+## Variables: 9
+## $ `Country Name`                           &lt;chr&gt; &quot;United States&quot;, &quot;China…
+## $ `Country Code`                           &lt;fct&gt; USA, CHN, IND, DEU, BRA…
+## $ `Sanitation Percent`                     &lt;dbl&gt; 99.98916, 85.32060, 62.…
+## $ Year                                     &lt;dbl&gt; 2010, 2010, 2010, 2010,…
+## $ `Plastic Waste (kg/person/day)`          &lt;dbl&gt; 0.007, 0.092, 0.009, 0.…
+## $ `GDP per capita`                         &lt;dbl&gt; 49374.179, 9525.818, 44…
+## $ Population                               &lt;dbl&gt; 310383948, 1341335152, …
+## $ `Law for equal gender pay (0=NO, 1=YES)` &lt;int&gt; 0, 0, 0, 0, 0, 1, 1, 1,…
+## $ GDP                                      &lt;dbl&gt; 1.532495e+13, 1.277732e…</code></pre>
+<pre class="r"><code>alldata1%&gt;% arrange(desc(`GDP per capita`))%&gt;%glimpse()</code></pre>
+<pre><code>## Observations: 109
+## Variables: 9
+## $ `Country Name`                           &lt;chr&gt; &quot;Singapore&quot;, &quot;Norway&quot;, …
+## $ `Country Code`                           &lt;fct&gt; SGP, NOR, USA, NLD, OMN…
+## $ `Sanitation Percent`                     &lt;dbl&gt; 100.00000, 98.00000, 99…
+## $ Year                                     &lt;dbl&gt; 2010, 2010, 2010, 2010,…
+## $ `Plastic Waste (kg/person/day)`          &lt;dbl&gt; 0.004, 0.006, 0.007, 0.…
+## $ `GDP per capita`                         &lt;dbl&gt; 72115.84, 62350.41, 493…
+## $ Population                               &lt;dbl&gt; 5086418, 4883111, 31038…
+## $ `Law for equal gender pay (0=NO, 1=YES)` &lt;int&gt; 0, 1, 0, 1, 0, 1, 1, 1,…
+## $ GDP                                      &lt;dbl&gt; 3.668113e+11, 3.044640e…</code></pre>
+<pre class="r"><code>alldata1%&gt;%arrange(`GDP`)%&gt;%glimpse()</code></pre>
+<pre><code>## Observations: 109
+## Variables: 9
+## $ `Country Name`                           &lt;chr&gt; &quot;Marshall Islands&quot;, &quot;Pa…
+## $ `Country Code`                           &lt;fct&gt; MHL, PLW, STP, TON, VUT…
+## $ `Sanitation Percent`                     &lt;dbl&gt; 89.88282, 99.83666, 39.…
+## $ Year                                     &lt;dbl&gt; 2010, 2010, 2010, 2010,…
+## $ `Plastic Waste (kg/person/day)`          &lt;dbl&gt; 0.150, 0.084, 0.085, 0.…
+## $ `GDP per capita`                         &lt;dbl&gt; 3479.1553, 11846.5739, …
+## $ Population                               &lt;dbl&gt; 54038, 20472, 165397, 1…
+## $ `Law for equal gender pay (0=NO, 1=YES)` &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0,…
+## $ GDP                                      &lt;dbl&gt; 188006594, 242523062, 4…</code></pre>
+<pre class="r"><code>alldata1%&gt;% summarize(mean(`Plastic Waste (kg/person/day)`))%&gt;%glimpse()</code></pre>
+<pre><code>## Observations: 1
+## Variables: 1
+## $ `mean(\`Plastic Waste (kg/person/day)\`)` &lt;dbl&gt; 0.05330275</code></pre>
+<pre class="r"><code>alldata1%&gt;%summarize(mean(`Sanitation Percent`))%&gt;%glimpse()</code></pre>
+<pre><code>## Observations: 1
+## Variables: 1
+## $ `mean(\`Sanitation Percent\`)` &lt;dbl&gt; 78.84356</code></pre>
+<pre class="r"><code>highwaste &lt;- alldata1%&gt;%filter(`Plastic Waste (kg/person/day)` &gt; 0.0533)%&gt;%glimpse()</code></pre>
+<pre><code>## Observations: 37
+## Variables: 9
+## $ `Country Name`                           &lt;chr&gt; &quot;Algeria&quot;, &quot;Bosnia and …
+## $ `Country Code`                           &lt;fct&gt; DZA, BIH, KHM, CHN, COM…
+## $ `Sanitation Percent`                     &lt;dbl&gt; 90.23560, 98.77351, 75.…
+## $ Year                                     &lt;dbl&gt; 2010, 2010, 2010, 2010,…
+## $ `Plastic Waste (kg/person/day)`          &lt;dbl&gt; 0.086, 0.061, 0.058, 0.…
+## $ `GDP per capita`                         &lt;dbl&gt; 12870.6027, 9720.3422, …
+## $ Population                               &lt;dbl&gt; 35468208, 3760149, 1413…
+## $ `Law for equal gender pay (0=NO, 1=YES)` &lt;int&gt; 1, 1, 0, 0, 0, 1, 0, 0,…
+## $ GDP                                      &lt;dbl&gt; 4.564972e+11, 3.654993e…</code></pre>
+<pre class="r"><code>lowwaste &lt;-alldata1%&gt;%filter(`Plastic Waste (kg/person/day)` &lt; 0.0533)%&gt;%glimpse()</code></pre>
+<pre><code>## Observations: 72
+## Variables: 9
+## $ `Country Name`                           &lt;chr&gt; &quot;Albania&quot;, &quot;Angola&quot;, &quot;A…
+## $ `Country Code`                           &lt;fct&gt; ALB, AGO, ARG, BGD, BEL…
+## $ `Sanitation Percent`                     &lt;dbl&gt; 97.97665, 57.40339, 94.…
+## $ Year                                     &lt;dbl&gt; 2010, 2010, 2010, 2010,…
+## $ `Plastic Waste (kg/person/day)`          &lt;dbl&gt; 0.032, 0.045, 0.026, 0.…
+## $ `GDP per capita`                         &lt;dbl&gt; 9927.182, 5897.683, 187…
+## $ Population                               &lt;dbl&gt; 3204284, 19081912, 4041…
+## $ `Law for equal gender pay (0=NO, 1=YES)` &lt;int&gt; 0, 1, 1, 0, 1, 0, 1, 0,…
+## $ GDP                                      &lt;dbl&gt; 3.180951e+10, 1.125391e…</code></pre>
+<pre class="r"><code>highwaste %&gt;%group_by(`Law for equal gender pay (0=NO, 1=YES)`)%&gt;%summarize(mean_gdpcap=mean(`GDP per capita`, na.rm = T))%&gt;%glimpse()</code></pre>
+<pre><code>## Observations: 2
+## Variables: 2
+## $ `Law for equal gender pay (0=NO, 1=YES)` &lt;int&gt; 0, 1
+## $ mean_gdpcap                              &lt;dbl&gt; 6815.625, 7531.124</code></pre>
+<pre class="r"><code>alldata1%&gt;%group_by(`Law for equal gender pay (0=NO, 1=YES)`)%&gt;%summarize(mean_gdp=mean(GDP, na.rm= T))%&gt;%glimpse()</code></pre>
+<pre><code>## Observations: 2
+## Variables: 2
+## $ `Law for equal gender pay (0=NO, 1=YES)` &lt;int&gt; 0, 1
+## $ mean_gdp                                 &lt;dbl&gt; 784665013853, 428896937…</code></pre>
+<pre class="r"><code>alldata1%&gt;%group_by(`Law for equal gender pay (0=NO, 1=YES)`)%&gt;%summarize(mean_gdpC=mean(`GDP per capita`, na.rm = T))%&gt;%glimpse()</code></pre>
+<pre><code>## Observations: 2
+## Variables: 2
+## $ `Law for equal gender pay (0=NO, 1=YES)` &lt;int&gt; 0, 1
+## $ mean_gdpC                                &lt;dbl&gt; 11138.25, 22757.81</code></pre>
+<pre class="r"><code>alldata1%&gt;%group_by(`Law for equal gender pay (0=NO, 1=YES)`)%&gt;%summarize(meansanp=mean(`Sanitation Percent`, na.rm = T))%&gt;%glimpse()</code></pre>
+<pre><code>## Observations: 2
+## Variables: 2
+## $ `Law for equal gender pay (0=NO, 1=YES)` &lt;int&gt; 0, 1
+## $ meansanp                                 &lt;dbl&gt; 75.39316, 84.34777</code></pre>
+<pre class="r"><code>alldata1%&gt;%group_by(`Law for equal gender pay (0=NO, 1=YES)`)%&gt;%summarize(sdsanp=sd(`Sanitation Percent`, na.rm = T))%&gt;%glimpse()</code></pre>
+<pre><code>## Observations: 2
+## Variables: 2
+## $ `Law for equal gender pay (0=NO, 1=YES)` &lt;int&gt; 0, 1
+## $ sdsanp                                   &lt;dbl&gt; 24.65523, 24.22812</code></pre>
+<pre class="r"><code>alldata1%&gt;%summarize(mean(`GDP per capita`))%&gt;%glimpse()</code></pre>
+<pre><code>## Observations: 1
+## Variables: 1
+## $ `mean(\`GDP per capita\`)` &lt;dbl&gt; 15615.51</code></pre>
+<pre class="r"><code>alldata1%&gt;%summarize(mean(`GDP`))%&gt;%glimpse()</code></pre>
+<pre><code>## Observations: 1
+## Variables: 1
+## $ `mean(GDP)` &lt;dbl&gt; 647580066911</code></pre>
+<pre class="r"><code>pt1all&lt;-alldata1%&gt;%select(`Country Name`, `Sanitation Percent`, `GDP per capita`)%&gt;%glimpse()</code></pre>
+<pre><code>## Observations: 109
+## Variables: 3
+## $ `Country Name`       &lt;chr&gt; &quot;Albania&quot;, &quot;Algeria&quot;, &quot;Angola&quot;, &quot;Argentina&quot;…
+## $ `Sanitation Percent` &lt;dbl&gt; 97.97665, 90.23560, 57.40339, 94.35405, 48.…
+## $ `GDP per capita`     &lt;dbl&gt; 9927.182, 12870.603, 5897.683, 18712.063, 2…</code></pre>
+<pre class="r"><code>head(pt1all)</code></pre>
+<pre><code>##   Country Name Sanitation Percent GDP per capita
+## 1      Albania           97.97665       9927.182
+## 2      Algeria           90.23560      12870.603
+## 3       Angola           57.40339       5897.683
+## 4    Argentina           94.35405      18712.063
+## 5   Bangladesh           48.68775       2442.729
+## 6      Belgium           99.48613      41085.919</code></pre>
+<p>Next, I generated several summary statistics. I used arrange(desc()) to find that Isreal, New Zealand, and Singapore all had the highest Sanitation Percents in 2010, with 100% of Urban Populations having at least basic Sanitation services.Next, I used arrange() to find that Madagascar had the lowest Sanitation percent in 2010, with 14.1% of Urban Populations having basic sanitation services.Following that, I mutated the dataset using the mutate() function to make a new column with the GDP which was the GDP per capita times the population. I then used arrange again to find that The US had the highest GDP in 2010, followed by China and then India. However, Singapore had the highest GDP per capita in 2010, followed by Norway and then the US. Next, I used summarize() to calculate that the mean plastic waste in 2010 was 0.0533 kg/person/day. I also found that the mean Sanitation Percent was 78.84% for the countries in the dataset. After I found the mean plastic waste, I used filter() to filter all of the countries with plastic waste greater than the mean, and I named this new dataset highwaste. There were 37 countries in 2010 with higher plastic waste than the mean plastic waste (kg/person/year).There were 72 countries in 2010 with lower plastic wastes than the mean. In continuation, I used group_by() to group by ‘Law for equal pay’ along with summarize to find that the mean gdp per capital for countries that have plastic was higher than the mean plastic waste was 6815.625 for countries without laws for equal gender pay, and 7531.124 for countries with laws for equal gender pay. Suprisingly, countries with no laws regarding equal gender pay had a high mean GDP than countries with laws for equal gender pay. The countries without laws for equal gender pay had a mean gdp of 7.8e11, compared to 4.3e11 of the countries with laws for equal gender pay. I used group_by and summarize again to find that the mean GDP per capita for countries without laws for equal gender pay was 11138.25 and the mean GDP per capita for countries with laws for equal gender pay was 22757.81. Next, I found that the mean Sanitation Percent was 75.39% for countries that did not have laws for equal gender pay. I also found that the mean Sanitation Percent for countries with laws for equal gender pay was 84.35%, which is 9% higher. The standard deviation for both of these groups was 24.66 and 24.23 respectively. Another summary statistic I found was that the mean GDP per capita for all of the countries was 15615.51 amd the mean GDP was 6.5e11.</p>
+</div>
+<div id="visualizing" class="section level2">
+<h2>4. Visualizing</h2>
+<pre class="r"><code>names(alldata1)[3]&lt;-&quot;SanitationPercent&quot;
+names(alldata1)[5]&lt;-&quot;PlasticWaste&quot;
+names(alldata1)[6]&lt;-&quot;GDPpercapita&quot;
+names(alldata1)[8]&lt;-&quot;GenderLaw&quot;
+names(alldata1)[1]&lt;-&quot;CountryName&quot;
+names(alldata1)[2]&lt;-&quot;CountryCode&quot;
+head(alldata1)</code></pre>
+<pre><code>##   CountryName CountryCode SanitationPercent Year PlasticWaste GDPpercapita
+## 1     Albania         ALB          97.97665 2010        0.032     9927.182
+## 2     Algeria         DZA          90.23560 2010        0.086    12870.603
+## 3      Angola         AGO          57.40339 2010        0.045     5897.683
+## 4   Argentina         ARG          94.35405 2010        0.026    18712.063
+## 5  Bangladesh         BGD          48.68775 2010        0.030     2442.729
+## 6     Belgium         BEL          99.48613 2010        0.002    41085.919
+##   Population GenderLaw          GDP
+## 1    3204284         0  31809509939
+## 2   35468208         1 456497213596
+## 3   19081912         1 112539064968
+## 4   40412376         1 756198928817
+## 5  148692131         0 363214563761
+## 6   10712066         1 440115075357</code></pre>
+<pre class="r"><code>names(pt1all)[1]&lt;-&quot;CountryName&quot;
+names(pt1all)[2]&lt;-&quot;SanitationPercent&quot;
+names(pt1all)[3]&lt;-&quot;GDPpercapita&quot;
+
+plot1&lt;-ggplot(data=alldata1, aes(x= SanitationPercent, y=GDPpercapita, color=GenderLaw)) + geom_point(size=2, alpha=0.85) +scale_color_gradient(low=&quot;blue&quot;, high = &quot;red&quot;)
+plot1+ ggtitle(&quot;GDP per Capita by Sanitation Percent and Gender Law&quot;)+ ylab(&quot;GDP per capita&quot;)+ xlab(&quot;Sanitation Percent&quot;)+theme_minimal()+ scale_y_continuous(breaks=c(10000,20000,30000,40000,50000,60000,70000,80000))+ guides(fill=guide_legend(title=&quot;Equal Pay for Gender Law Status 0=NO, 1=YES&quot;))</code></pre>
+<p><img src="/Project1_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<pre class="r"><code>alldata1%&gt;%arrange(desc(`SanitationPercent`))%&gt;%glimpse()</code></pre>
+<pre><code>## Observations: 109
+## Variables: 9
+## $ CountryName       &lt;chr&gt; &quot;Israel&quot;, &quot;New Zealand&quot;, &quot;Singapore&quot;, &quot;United …
+## $ CountryCode       &lt;fct&gt; ISR, NZL, SGP, USA, MLT, ESP, PLW, CAN, CYP, D…
+## $ SanitationPercent &lt;dbl&gt; 100.00000, 100.00000, 100.00000, 99.98916, 99.…
+## $ Year              &lt;dbl&gt; 2010, 2010, 2010, 2010, 2010, 2010, 2010, 2010…
+## $ PlasticWaste      &lt;dbl&gt; 0.008, 0.007, 0.004, 0.007, 0.018, 0.006, 0.08…
+## $ GDPpercapita      &lt;dbl&gt; 29743.006, 32119.216, 72115.840, 49374.179, 28…
+## $ Population        &lt;dbl&gt; 7418400, 4368136, 5086418, 310383948, 416515, …
+## $ GenderLaw         &lt;int&gt; 1, 0, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1…
+## $ GDP               &lt;dbl&gt; 2.206455e+11, 1.403011e+11, 3.668113e+11, 1.53…</code></pre>
+<pre class="r"><code>cleandata&lt;-alldata1%&gt;%filter(SanitationPercent&gt;99.5)%&gt;%glimpse()</code></pre>
+<pre><code>## Observations: 10
+## Variables: 9
+## $ CountryName       &lt;chr&gt; &quot;Canada&quot;, &quot;Cyprus&quot;, &quot;Denmark&quot;, &quot;Israel&quot;, &quot;Malt…
+## $ CountryCode       &lt;fct&gt; CAN, CYP, DNK, ISR, MLT, NZL, PLW, SGP, ESP, U…
+## $ SanitationPercent &lt;dbl&gt; 99.66317, 99.65084, 99.59718, 100.00000, 99.97…
+## $ Year              &lt;dbl&gt; 2010, 2010, 2010, 2010, 2010, 2010, 2010, 2010…
+## $ PlasticWaste      &lt;dbl&gt; 0.002, 0.006, 0.001, 0.008, 0.018, 0.007, 0.08…
+## $ GDPpercapita      &lt;dbl&gt; 40699.36, 33941.14, 43998.44, 29743.01, 28364.…
+## $ Population        &lt;dbl&gt; 34016593, 1103647, 5550142, 7418400, 416515, 4…
+## $ GenderLaw         &lt;int&gt; 1, 1, 1, 1, 1, 0, 0, 0, 1, 0
+## $ GDP               &lt;dbl&gt; 1.384453e+12, 3.745904e+10, 2.441976e+11, 2.20…</code></pre>
+<pre class="r"><code>plot2&lt;-ggplot(cleandata, aes(x=CountryName, y=GDPpercapita, fill=GenderLaw))+geom_bar(stat=&quot;summary&quot;, fun.y=&quot;mean&quot;, color=&quot;blue&quot;)+coord_flip()
+plot2+ ggtitle(&quot;Mean GDP per Capita for Top 10 Sanitation Countries&quot;)+ ylab(&quot;GDP per capita&quot;)+ xlab(&quot;Country Name&quot;)+theme(axis.text.x=element_text(angle= 45, hjust = 1))+theme(legend.background = element_rect(fill=&quot;lightpink&quot;))+ guides(fill=guide_legend(title=&quot;Equal Pay for Gender Law Status 0=NO, 1=YES&quot;))+theme_light()</code></pre>
+<p><img src="/Project1_files/figure-html/unnamed-chunk-5-2.png" width="672" /></p>
+<p>The first plots describes Sanitation Percent by GDP per capita and whether or not the country has laws regarding equal pay for gender. In the graph, it appears that as the Sanitation Percent increases, the GDP per capita increases as well suggesting that there is a possible positive correlation between GDP per capital and Sanitation Percent. The color of the points desribes whether or not there is a law regarding equal pay for each gender. Observing this graph, it appears that the red points are typically higher on the graph than the blue and are more to the right, indicating that countries with laws about equal pay for gender typically have both higher GDP per capita and higher Sanitation Percentages. I made this plot using ggplot and geom_point. I changed the tick marks on the y-axis for this graph, along with the size and color of the of the points.</p>
+<p>The second plot illustrates the GDP per capita by country for the top 10 countries with the highest sanitation percentages. I first used the function arrange(desc()) to arrange by Sanitation Percent and then used the filter() function to only use the top 10 countries with the highest sanitation. I then saved this as a new dataset called cleandata. Overall, this graph looks at how the top 10 countries sanitation percentage wise, different in GDP per capita, and also shows whether or not each of the 10 countries has laws regarding equal pay for each gender. This graph suggests that Singapore has the highest GDP per capita out of the countries with the highest sanitation percentages. This graph also shows that 6 out of the top 10 countries with the highest sanitation percentages have a law regarding equal pay for each gender.</p>
+<p>##5. Dimensionality Reduction</p>
+<pre class="r"><code>alldata2&lt;-alldata1%&gt;%select(-&quot;CountryName&quot;,-&quot;CountryCode&quot;,-&quot;Year&quot;, -&quot;PlasticWaste&quot;,-&quot;Population&quot;,-&quot;GenderLaw&quot;,-&quot;GDP&quot;)%&gt;%glimpse()</code></pre>
+<pre><code>## Observations: 109
+## Variables: 2
+## $ SanitationPercent &lt;dbl&gt; 97.97665, 90.23560, 57.40339, 94.35405, 48.687…
+## $ GDPpercapita      &lt;dbl&gt; 9927.182, 12870.603, 5897.683, 18712.063, 2442…</code></pre>
+<pre class="r"><code>alldata3&lt;-alldata1%&gt;%select(-&quot;CountryName&quot;,-&quot;CountryCode&quot;,-&quot;Year&quot;, -&quot;SanitationPercent&quot;,-&quot;Population&quot;,-&quot;GenderLaw&quot;,-&quot;GDP&quot;)%&gt;%glimpse()</code></pre>
+<pre><code>## Observations: 109
+## Variables: 2
+## $ PlasticWaste &lt;dbl&gt; 0.032, 0.086, 0.045, 0.026, 0.030, 0.002, 0.053, 0.…
+## $ GDPpercapita &lt;dbl&gt; 9927.182, 12870.603, 5897.683, 18712.063, 2442.729,…</code></pre>
+<pre class="r"><code>alldata4&lt;-alldata1%&gt;%select(-&quot;CountryName&quot;,-&quot;CountryCode&quot;,-&quot;Year&quot;, -&quot;GDPpercapita&quot;,-&quot;Population&quot;,-&quot;GenderLaw&quot;,-&quot;GDP&quot;)%&gt;%glimpse()</code></pre>
+<pre><code>## Observations: 109
+## Variables: 2
+## $ SanitationPercent &lt;dbl&gt; 97.97665, 90.23560, 57.40339, 94.35405, 48.687…
+## $ PlasticWaste      &lt;dbl&gt; 0.032, 0.086, 0.045, 0.026, 0.030, 0.002, 0.05…</code></pre>
+<pre class="r"><code>#Sanitation Percent and GDP per Capita
+wss&lt;-vector()
+for(i in 1:10){
+temp&lt;-alldata2%&gt;%dplyr::select(SanitationPercent,GDPpercapita)%&gt;%kmeans(.,i)
+wss[i]&lt;-temp$tot.withinss%&gt;%glimpse()
+}</code></pre>
+<pre><code>##  num 2.45e+10
+##  num 5.75e+09
+##  num 3.29e+09
+##  num 1.96e+09
+##  num 1.51e+09
+##  num 6.11e+08
+##  num 4.81e+08
+##  num 3.92e+08
+##  num 3.71e+08
+##  num 3.51e+08</code></pre>
+<pre class="r"><code>ggplot()+geom_point(aes(x=1:10,y=wss))+geom_path(aes(x=1:10,y=wss))+
+ xlab(&quot;clusters&quot;)+scale_x_continuous(breaks=1:10)</code></pre>
+<p><img src="/Project1_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<pre class="r"><code>kmeans1&lt;-alldata2%&gt;%scale%&gt;%kmeans(2)%&gt;%glimpse</code></pre>
+<pre><code>## List of 9
+##  $ cluster     : int [1:109] 1 1 2 1 2 1 1 2 1 1 ...
+##  $ centers     : num [1:2, 1:2] 0.6 -1.269 0.385 -0.814
+##   ..- attr(*, &quot;dimnames&quot;)=List of 2
+##   .. ..$ : chr [1:2] &quot;1&quot; &quot;2&quot;
+##   .. ..$ : chr [1:2] &quot;SanitationPercent&quot; &quot;GDPpercapita&quot;
+##  $ totss       : num 216
+##  $ withinss    : num [1:2] 78.2 20.6
+##  $ tot.withinss: num 98.8
+##  $ betweenss   : num 117
+##  $ size        : int [1:2] 74 35
+##  $ iter        : int 1
+##  $ ifault      : int 0
+##  - attr(*, &quot;class&quot;)= chr &quot;kmeans&quot;</code></pre>
+<pre class="r"><code>kmeans1</code></pre>
+<pre><code>## K-means clustering with 2 clusters of sizes 74, 35
+## 
+## Cluster means:
+##   SanitationPercent GDPpercapita
+## 1         0.6002317    0.3849458
+## 2        -1.2690613   -0.8138854
+## 
+## Clustering vector:
+##   [1] 1 1 2 1 2 1 1 2 1 1 1 2 2 1 1 1 1 2 1 2 1 1 1 1 1 1 1 2 1 1 1 1 2 1 1
+##  [36] 2 1 1 2 2 1 2 1 1 2 2 1 1 1 1 1 1 2 1 2 1 2 1 1 1 1 2 1 1 1 1 2 2 2 1
+##  [71] 1 2 2 1 1 2 1 1 2 1 2 1 1 1 1 2 2 2 1 1 2 1 1 1 2 1 1 2 1 2 1 1 1 1 1
+## [106] 1 1 2 1
+## 
+## Within cluster sum of squares by cluster:
+## [1] 78.20216 20.61929
+##  (between_SS / total_SS =  54.2 %)
+## 
+## Available components:
+## 
+## [1] &quot;cluster&quot;      &quot;centers&quot;      &quot;totss&quot;        &quot;withinss&quot;    
+## [5] &quot;tot.withinss&quot; &quot;betweenss&quot;    &quot;size&quot;         &quot;iter&quot;        
+## [9] &quot;ifault&quot;</code></pre>
+<pre class="r"><code>kmeansclust&lt;-alldata2%&gt;%mutate(cluster=as.factor(kmeans1$cluster))%&gt;%glimpse</code></pre>
+<pre><code>## Observations: 109
+## Variables: 3
+## $ SanitationPercent &lt;dbl&gt; 97.97665, 90.23560, 57.40339, 94.35405, 48.687…
+## $ GDPpercapita      &lt;dbl&gt; 9927.182, 12870.603, 5897.683, 18712.063, 2442…
+## $ cluster           &lt;fct&gt; 1, 1, 2, 1, 2, 1, 1, 2, 1, 1, 1, 2, 2, 1, 1, 1…</code></pre>
+<pre class="r"><code>kmeansclust%&gt;%ggplot(aes(SanitationPercent,GDPpercapita,color=cluster))+geom_point()</code></pre>
+<p><img src="/Project1_files/figure-html/unnamed-chunk-6-2.png" width="672" /></p>
+<pre class="r"><code>kmeans1$betweenss</code></pre>
+<pre><code>## [1] 117.1786</code></pre>
+<pre class="r"><code>kmeans1$size</code></pre>
+<pre><code>## [1] 74 35</code></pre>
+<pre class="r"><code>kmeans1$tot.withinss</code></pre>
+<pre><code>## [1] 98.82144</code></pre>
+<pre class="r"><code>kmeans1$centers</code></pre>
+<pre><code>##   SanitationPercent GDPpercapita
+## 1         0.6002317    0.3849458
+## 2        -1.2690613   -0.8138854</code></pre>
+<pre class="r"><code>#GDP per capita and Plastic Waste
+wss2&lt;-vector()
+for(i in 1:10){
+temp3&lt;-alldata3%&gt;%dplyr::select(GDPpercapita,PlasticWaste)%&gt;%kmeans(.,i)
+wss2[i]&lt;-temp3$tot.withinss%&gt;%glimpse()
+}</code></pre>
+<pre><code>##  num 2.45e+10
+##  num 5.75e+09
+##  num 3.29e+09
+##  num 1.96e+09
+##  num 1.51e+09
+##  num 1.38e+09
+##  num 4.81e+08
+##  num 3.92e+08
+##  num 3.71e+08
+##  num 3.51e+08</code></pre>
+<pre class="r"><code>ggplot()+geom_point(aes(x=1:10,y=wss2))+geom_path(aes(x=1:10,y=wss2))+
+ xlab(&quot;clusters&quot;)+scale_x_continuous(breaks=1:10)</code></pre>
+<p><img src="/Project1_files/figure-html/unnamed-chunk-6-3.png" width="672" /></p>
+<pre class="r"><code>kmeans2&lt;-alldata3%&gt;%scale%&gt;%kmeans(2)%&gt;%glimpse</code></pre>
+<pre><code>## List of 9
+##  $ cluster     : int [1:109] 2 2 2 2 2 1 2 2 2 2 ...
+##  $ centers     : num [1:2, 1:2] -0.794 0.33 1.313 -0.545
+##   ..- attr(*, &quot;dimnames&quot;)=List of 2
+##   .. ..$ : chr [1:2] &quot;1&quot; &quot;2&quot;
+##   .. ..$ : chr [1:2] &quot;PlasticWaste&quot; &quot;GDPpercapita&quot;
+##  $ totss       : num 216
+##  $ withinss    : num [1:2] 21.7 87.7
+##  $ tot.withinss: num 109
+##  $ betweenss   : num 107
+##  $ size        : int [1:2] 32 77
+##  $ iter        : int 1
+##  $ ifault      : int 0
+##  - attr(*, &quot;class&quot;)= chr &quot;kmeans&quot;</code></pre>
+<pre class="r"><code>kmeans2</code></pre>
+<pre><code>## K-means clustering with 2 clusters of sizes 32, 77
+## 
+## Cluster means:
+##   PlasticWaste GDPpercapita
+## 1   -0.7936429    1.3125933
+## 2    0.3298256   -0.5454933
+## 
+## Clustering vector:
+##   [1] 2 2 2 2 2 1 2 2 2 2 2 2 2 1 1 2 2 2 2 2 1 1 1 2 2 2 1 2 1 2 1 1 2 2 1
+##  [36] 2 1 2 2 2 2 2 2 1 2 2 2 1 1 1 2 2 2 1 2 1 2 2 2 1 2 2 2 2 2 2 2 2 2 1
+##  [71] 1 2 2 1 1 2 2 2 2 2 2 1 1 1 2 2 2 2 1 1 2 2 1 2 2 2 1 2 2 2 2 2 2 2 1
+## [106] 1 2 2 2
+## 
+## Within cluster sum of squares by cluster:
+## [1] 21.67588 87.74668
+##  (between_SS / total_SS =  49.3 %)
+## 
+## Available components:
+## 
+## [1] &quot;cluster&quot;      &quot;centers&quot;      &quot;totss&quot;        &quot;withinss&quot;    
+## [5] &quot;tot.withinss&quot; &quot;betweenss&quot;    &quot;size&quot;         &quot;iter&quot;        
+## [9] &quot;ifault&quot;</code></pre>
+<pre class="r"><code>kmeans2$betweenss</code></pre>
+<pre><code>## [1] 106.5774</code></pre>
+<pre class="r"><code>kmeans2$size</code></pre>
+<pre><code>## [1] 32 77</code></pre>
+<pre class="r"><code>kmeans2$centers</code></pre>
+<pre><code>##   PlasticWaste GDPpercapita
+## 1   -0.7936429    1.3125933
+## 2    0.3298256   -0.5454933</code></pre>
+<pre class="r"><code>kmeansclust2&lt;-alldata3%&gt;%mutate(cluster=as.factor(kmeans2$cluster))%&gt;%glimpse</code></pre>
+<pre><code>## Observations: 109
+## Variables: 3
+## $ PlasticWaste &lt;dbl&gt; 0.032, 0.086, 0.045, 0.026, 0.030, 0.002, 0.053, 0.…
+## $ GDPpercapita &lt;dbl&gt; 9927.182, 12870.603, 5897.683, 18712.063, 2442.729,…
+## $ cluster      &lt;fct&gt; 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 1, 1, 2, 2, …</code></pre>
+<pre class="r"><code>kmeansclust2%&gt;%ggplot(aes(GDPpercapita,PlasticWaste,color=cluster))+geom_point()</code></pre>
+<p><img src="/Project1_files/figure-html/unnamed-chunk-6-4.png" width="672" /></p>
+<pre class="r"><code>#Sanitation and Plastic Waste
+
+wss3&lt;-vector()
+for(i in 1:10){
+temp4&lt;-alldata4%&gt;%dplyr::select(SanitationPercent,PlasticWaste)%&gt;%kmeans(.,i)
+wss3[i]&lt;-temp4$tot.withinss%&gt;%glimpse()
+}</code></pre>
+<pre><code>##  num 66258
+##  num 11190
+##  num 5589
+##  num 2937
+##  num 1694
+##  num 1553
+##  num 1530
+##  num 1524
+##  num 703
+##  num 593</code></pre>
+<pre class="r"><code>ggplot()+geom_point(aes(x=1:10,y=wss3))+geom_path(aes(x=1:10,y=wss3))+
+ xlab(&quot;clusters&quot;)+scale_x_continuous(breaks=1:10)</code></pre>
+<p><img src="/Project1_files/figure-html/unnamed-chunk-6-5.png" width="672" /></p>
+<pre class="r"><code>kmeans5&lt;-alldata4%&gt;%scale%&gt;%kmeans(2)%&gt;%glimpse()</code></pre>
+<pre><code>## List of 9
+##  $ cluster     : int [1:109] 2 2 1 2 1 2 2 1 2 2 ...
+##  $ centers     : num [1:2, 1:2] -1.5434 0.5335 0.1008 -0.0348
+##   ..- attr(*, &quot;dimnames&quot;)=List of 2
+##   .. ..$ : chr [1:2] &quot;1&quot; &quot;2&quot;
+##   .. ..$ : chr [1:2] &quot;SanitationPercent&quot; &quot;PlasticWaste&quot;
+##  $ totss       : num 216
+##  $ withinss    : num [1:2] 31.8 94.1
+##  $ tot.withinss: num 126
+##  $ betweenss   : num 90.1
+##  $ size        : int [1:2] 28 81
+##  $ iter        : int 1
+##  $ ifault      : int 0
+##  - attr(*, &quot;class&quot;)= chr &quot;kmeans&quot;</code></pre>
+<pre class="r"><code>kmeans5</code></pre>
+<pre><code>## K-means clustering with 2 clusters of sizes 28, 81
+## 
+## Cluster means:
+##   SanitationPercent PlasticWaste
+## 1        -1.5434496    0.1007814
+## 2         0.5335381   -0.0348380
+## 
+## Clustering vector:
+##   [1] 2 2 1 2 1 2 2 1 2 2 2 2 1 2 2 2 2 1 2 1 2 2 2 2 2 2 2 1 2 2 2 2 1 2 2
+##  [36] 1 2 2 1 1 2 1 2 2 1 2 2 2 2 2 2 2 1 2 1 2 1 2 2 2 2 1 2 2 2 2 1 2 1 2
+##  [71] 2 2 1 2 2 2 2 2 1 2 2 2 2 2 2 1 1 1 2 2 2 2 2 2 1 2 2 1 2 1 2 2 2 2 2
+## [106] 2 2 1 2
+## 
+## Within cluster sum of squares by cluster:
+## [1] 31.75714 94.09984
+##  (between_SS / total_SS =  41.7 %)
+## 
+## Available components:
+## 
+## [1] &quot;cluster&quot;      &quot;centers&quot;      &quot;totss&quot;        &quot;withinss&quot;    
+## [5] &quot;tot.withinss&quot; &quot;betweenss&quot;    &quot;size&quot;         &quot;iter&quot;        
+## [9] &quot;ifault&quot;</code></pre>
+<pre class="r"><code>kmeans5$size</code></pre>
+<pre><code>## [1] 28 81</code></pre>
+<pre class="r"><code>kmeans5$betweenss</code></pre>
+<pre><code>## [1] 90.14302</code></pre>
+<pre class="r"><code>kmeans5$tot.withinss</code></pre>
+<pre><code>## [1] 125.857</code></pre>
+<pre class="r"><code>kmeansclust5&lt;-alldata4%&gt;%mutate(cluster=as.factor(kmeans5$cluster))
+kmeansclust5%&gt;%ggplot(aes(SanitationPercent,PlasticWaste,color=cluster))+geom_point()</code></pre>
+<p><img src="/Project1_files/figure-html/unnamed-chunk-6-6.png" width="672" />
+For my data, I performed a k-means cluster for multiple variables in my dataset. The first k-means cluster I performed was for Sanitation Percent and GDP per capita. Initially, I made a new dataset from my joint data, called “alldata2”. Next, I determined the number of clusters by observed the plot of I made for clusters vs. wss. I determined the number of clusters to be 2 by looking at the elbow of the graph I generated. 2 was where graph started to decrease gradually. Next, using k-means cluster, I was able to make a plot using ggplot. I am able to observe two clear groups, from this I can see that countries with a high GDP almost always have a high sanitation. From this plot, it is also clear that countries with a Sanitation Percent less than arond 75%, almost always have lower GDP. The two clusters in this plot are seen as high GDP per capita + high Sanitation, and low GDP per capita with low Sanitation. The betweenss was 117.28. The size of the clusters was 78 and 31, with the group having higher Sanitation Percents and GDP per capita containing 78 countries.</p>
+<p>Next, performed a second k-means cluster for GDP per capita and unmanaged plastic waste. The first thing I did was find out how many clusters to use based to the plot that I generated of clusters vs. wss. I again determined the number of cluster to be 2. Next, I made a plot using ggplot visualizing the points for both clusters. From this plot, it can be observed that there are 2 clusters, separating higher and lower GDP per capita. The group with higher GDP per capita has overall lower Plastic Waste. Using k-means cluster, I determined the size of each cluster to be 77 and 32. The betweenss was 106.58.</p>
+<p>Finally, I performed a third k-means cluster for Sanitation and Plastic Waste. I determined the number of clusters to be 2 by observing the clusters vs. wss plot. Then, I ploted the clusters and able to observed 2 distinct groups. Using, k-means cluster, the plot that was produced separated the two groups on the basis of high and low plastic waste, but the distinction between Sanitation Percents was not as clear in this plot. The size of the 2 clusters was 97 and 12 with the group with lower Plastic Waste containing 97 countries. The betweenss was 67.5 and the tot.withinss was 148.5.</p>
+</div>
