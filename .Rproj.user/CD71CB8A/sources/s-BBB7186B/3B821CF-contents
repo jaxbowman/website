@@ -1,0 +1,138 @@
+---
+title: "Resume"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Biography
+My name is Jaxon Bowman, and I am a senior biology student at UT Austin. I am currently a pre-med student, hoping to attend medical school and become a pediatric cardiologist! Another goal of mine to be a part of Doctors without Borders and help provide medical care to people in developing countries. On campus, I am involved in Global Medical Training, and I have been on one medical mission trip to The Dominican Republic! Fun fact: I just ran my first half marathon!
+
+***
+## Education
+Bachelor of Science and Arts, Biology Spring 2020
+
+The University of Texas at Austin
+
+
+***
+## Interests
+**Data science**: Ultilizing Rstudio and Python to analyze data!
+
+**Foreign language**: Self-studying Spanish in preparation of medical mission trips to South American countries
+
+**Fitness**: Runs 10Ks and half marathons along with participating in various group exercise classes
+
+
+***
+## Work Experience
+**South West Emergency Action Team (SWEAT)** Fall 2018- Fall 2019         
+
+*Emergency Medical Technician*
+
+Provides medical assistance in emergency situations at special events
+
+
+**Curley Laboratory at The University of Texas at Austin** Summer 2018- Present
+
+*Research Assistant*
+
+Ran statistical analyses of behavioral neuroscience data
+
+Assisted in research by collecting data and observing mice
+
+
+
+**Vasquez Laboratory at The Dell Pediatric Research Institute** Spring 2017
+
+*Research Assistant*
+
+Collaborated with PhD students in lab that focused on how different types of DNA affect cancer
+
+Devoted approximately 12 hours per week to doing research in lab
+
+Ran gel electrophoresis, completed DNA transformations, and counted bacteria colonies while learning basic wet lab techniques
+
+
+
+**Texas Children's Pediatrics** Summer 2015
+
+*MyChart Summer Intern*
+
+Assisted patients and parents in signing up for online portals to view medical records
+
+Interacts with both doctors and nurses to improve patient care
+
+
+***
+
+## Volunteer Experience
+**Big Brothers Big Sisters (BBBS)** Summer 2019- Present
+
+Provides mentorship to middle schooler through one-on-one outings once per week
+
+
+
+**Dell Seton Medical Center** Fall 2018-Spring 2019
+
+Transports patients to their rooms in the emergency department
+
+Assists in clerical tasks in the front reception desk
+
+
+
+**Global Medical Training** Fall 2016- Present
+
+Selected to go on a medical mission trip during January of 2018 to The Dominican Republic
+
+Assists doctors by taking vital signs, obtaining past medical histories, and asking patients critical questions
+
+Volunteered weekly at Micah 6 food pantry
+
+
+
+**Texas Children's Hospital** Summer 2016 & Summer 2017
+
+Volunteering in the emergency department at Texas Children's Hospital in the Texas Medical Center
+
+Went room to room asking patients and parents if they needed any toys, games, or assistance
+
+
+
+
+***
+## Skills and Certifications
+RStudio
+
+Python
+
+Nationally Registered Emergency Medical Technician (EMT)
+
+American Red Cross Health Care Provider CPR Certified
+
+
+***
+## Accomplishments
+
+**Summer Undergraduate Research Experience (SURE)** Summer 2018
+
+One of the eight students out of 200 selected to participate in the SURE program
+
+Awarded stipend of $2500
+
+
+
+***
+## Contact Information
+
+Email: jaxpbowman@gmail.com
+
+github: jaxbowman
+
+
+
+
+
+

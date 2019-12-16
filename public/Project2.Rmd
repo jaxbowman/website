@@ -7,7 +7,7 @@ output:
   word_document: default
   html_document: default
 ---
-## Jaxon Bowman Jpb2995 Project 2
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyr)
@@ -16,7 +16,7 @@ library(dplyr)
 library(ggplot2)
 ```
 
-## 0. Introduction
+## Introduction
 ```{R}
 ipf_lifts <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-10-08/ipf_lifts.csv")
 data3<-na.omit(ipf_lifts)
@@ -29,7 +29,7 @@ data <- data[!is.na(as.numeric(as.character(data$place))),]
 ```
 My data set contains information about powerlifting. I obtained this data set from the GitHub Tidy Tuesday website. This dataset includes information from various powerlifting competetions over time. The main variables, I will be looking at for this project include; body weight, best 3 bench press weight, best 3 squat weight, best 3 deadlift weight, gender, place, and equipment type. Body weight is how much the powerlifter weighed in kilograms. Best 3 squat, deadlift, and bench are each columns that describe the maximum weight of three successful attempts. These are both numeric variables. Place is the weightlifter's earned place in the competition they participated in. Equipment type tells us the type of equipment the weightlifter used. It is a categorical variable and the three categoreis are; raw (indicating no equipment), single-ply, and wraps. Finally, the binary variable in this data set is gender, with male and female. I choose this data set because I am interested in sports, and I thought it would be interesting to see the differences between men and women as well as the differences based on what type equipment was used. 
 
-## 1. (15 pts) Perform a MANOVA testing whether any of your numeric variables (or a subset of them, if including them all doesn’t make sense) show a mean difference across levels of one of your categorical variables (3). If they do, perform univariate ANOVAs to find response(s) showing a mean difference across groups (3), and perform post-hoc t tests to find which groups differ (3). Discuss the number of tests you have performed, calculate the probability of at least one type I error (if unadjusted), and adjust the significance level accordingly (bonferroni correction) before discussing significant differences (3). Briefly discuss assumptions and whether or not they are likely to have been met (2).
+## MANOVA Test
 
 
 ```{R}
@@ -61,7 +61,7 @@ In total, there was 1 MANOVA, 3 ANOVAS, and 9 t-tests performed. This gives us a
 The assumptions for MANOVA include random samples and independent observations, multivariate normality of dependent variables, homogeneity of within-group covariance matrices, linear relationships among dependent variables, no extreme univariate or multivariate outliers, and no multicolinearlity. Not all of these were met in my test. Specifically, no multicolinearity was not met as the three different dependent variables were likely to be correlated in this case. Also, there most likely was not linear relationships among dependent variables. The assumptions that were met include; random samples, multivariate normality of DVs, homogeneity of within-group covariance matrices, and no extreme univariate or multivariate outliers. 
 
 
-## 2. (10 pts) Randomization Test
+## Randomization Test
 ```{R}
 t.test(data=data, bodyweight~sex)
 
@@ -81,7 +81,8 @@ rand_dist4[i]<-mean(new4[new4$sex=="M",]$bodyweight)-
 {hist(rand_dist4,main="",ylab=""); abline(v =22.8,col="red")}
 ```
 I choose to perform a t-test on body weight and sex. The null hypotheis is that there is no difference in means of body weight between males and females. The alternative hypothesis is that the true difference in means between male and females is not equal to zero. The t-test resulted in a p-value less than 0.05, so this means that there is a signficant different in body weight between males and females. The females had an average body weight of 64.976 kg, and the males had an average body weight of 87.872 kg.
-### 3. (35 pts) Linear Regression Model
+
+## Linear Regression Model
 ```{R}
 
 
@@ -141,8 +142,9 @@ The linear regression I performed predicted body weight in kilograms from maximu
 
 I checked the assumptions for linearity, homoskedasticity, and normality graphically. Linearity and homoskedasticity were checked by plotted the fitvals by the resids using ggplot. Both of these assumptions were met. Next, I checked the assumption of normality by making a histogram of the residuals and by making a line graph of the theoretical vs. sample. The normality assumption was met. 
 
-After checking the assumptions, I next recomputed the regression using the results with robust standard errors using coeftest. The results slightly differed from before using the robust standard errors. The new standard error values were all larger than the standard error values before, but this did not change the significance of any of the predictors. My model explained 52.75% of the variation in outcome as calculated from the adjusted R-squared value. 
-###4. (5 pts)Linear Regression Model with Bootstrapped SEs
+After checking the assumptions, I next recomputed the regression using the results with robust standard errors using coeftest. The results slightly differed from before using the robust standard errors. The new standard error values were all larger than the standard error values before, but this did not change the significance of any of the predictors. My model explained 52.75% of the variation in outcome as calculated from the adjusted R-squared value.
+
+## Linear Regression Model with Bootstrapped SEs
 
 ```{R}
 sample_distn<-replicate(1000, {
@@ -159,7 +161,7 @@ sample_distn%>%t%>%as.data.frame%>%summarize_all(sd)
 
 Next, I reran the same regression with the bootstrapped standard errors. These standard errors are slightly different than the original and the robust SE values. The bootstrapped SE for the intercept was 0.146, while the original was 0.139. The max squat SE for the bootstrap was 0.00465 while the SE for the original was 0.0037. The max bench bootstrapped SE was 0.00614 while the original was 0.005. Lastly the bootstrapped SE for the interaction was 2.343e-05, while the original was 2.21e-05. So overall, the bootstrapped standard errors were all slightly higher than the original standard errors. Compared to the robust standard errors, the bootstrapped standard errors were all very close. The p-values were still under 0.05 when using the bootstrapped standard errors. 
 
-###5. (40 pts) Logistic Regression
+## Logistic Regression
 
 ```{R} 
 data2<-data%>%mutate(y=ifelse(sex=="M", 1,0))
@@ -239,7 +241,8 @@ I choose to perform a logistic regression predicting sex from body weight and ma
 After making a confusion matrix, I computed the accuracy to be 0.827, the sensitivity to be 0.854, the specificity to be 0.773, and finally the PPV was 0.881. The accuracy is the proportion of correctly classified cases, so an accuracy of 0.827 is pretty good. Sensitivity or true positive rate was the proportion of men identified correctly, so again 0.854 is good as well. Specificity was the proportion of women correctly classified and it was 0.881 which is good too. I next used ggplot to plot density of log-odds(logit) by my primary outcome variable (gender). Overall, the accuracy, sensitivity, specificity, and precision were all pretty high. 
 
 Next I generated a ROC curve. I calculated the AUC, or the area under the curve to be 0.903. The AUC quantifies how well we are at predicting sex from body weight and max squat weight. An AUC of 0.903 is pretty good at predicting the outcome!Next, I performed the 10-fold cross variation. The accuracy was 0.836. The sensitivity was 0.881. The specificity was 0.752. The ppv was 0.867. The AUC, or the area under the curve was 0.903.
-###6. (10 pts) LASSO
+
+## LASSO
 
 ```{R}
 library(glmnet)

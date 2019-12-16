@@ -1,5 +1,5 @@
 ---
-title: Blog Post
+title: Regular Expressions in Python
 author: Jaxon Bowman
 date: '2019-12-15'
 slug: blog-post
@@ -7,3 +7,33 @@ categories: []
 tags: []
 description: ''
 ---
+![](/blog/2019-12-15-blog-post_files/meme.jpg)
+Having never Python before, I found regular expressions to be incredibly useful and interesting. At first it was difficult to figure out the meaning of all of the symbols and how to use them. However, I eventualy got the hang of it and was able to use extract information from text by searching for a specific pattern. Regex is cruical for reformatting and cleaning data as well as web scrapping. Below is a simple example of me using regex.
+
+```{r}
+library(reticulate)
+```
+
+```{python}
+import re
+string1="We have to extract these numbers 12, 47, 48 The integers numbers are also interesting: 189 2036 314\',\' is a separator, so please extract these numbers 125,789,1450 and also these 564,90456 We like to offer you 7890$ per month in order to complete this task... we are joking"
+
+print(string1)
+
+re.findall(r"\d+", string1)
+```
+The example above is fairly simple. The use of regular expressions I found to be most interesting was to match urls in a string. Regex can be used to pull out all of the urls in a given string. Below is an example of me matching all of my favorite website urls to shop and browse at using Regex. 
+
+```{python}
+string2="My favorite store to shop for workout clothing is https://lululemon.com. However, I also love to buy workout or athleisure clothing at https://outdoorvoices.com. For makeup, I enjoy to browse the https://glossier.com website. https://lulus.com has the BEST dresses for any occassion. Another website that I love to shop on for clothing is https://nordstrom.com. Where do you enjoy shopping?"
+
+re.findall(r'https://[\S*]+[\w/]', string2)
+
+
+
+```
+
+As you can see, there are many uses for regular expressions. There are much more complicated ways to utilize them! Sometimes it can be challenging to remember what each symbol means and how to use them, but it is always rewarding when you match what you are wanting using regex!
+
+
+![Outdoor voices clothing](/blog/2019-12-15-blog-post_files/ov1.png)

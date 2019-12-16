@@ -12,12 +12,12 @@
     
     
     <item>
-      <title>Blog Post</title>
+      <title>Regular Expressions in Python</title>
       <link>/blog/blog-post/</link>
       <pubDate>Sun, 15 Dec 2019 00:00:00 +0000</pubDate>
       
       <guid>/blog/blog-post/</guid>
-      <description></description>
+      <description>Having never Python before, I found regular expressions to be incredibly useful and interesting. At first it was difficult to figure out the meaning of all of the symbols and how to use them. However, I eventualy got the hang of it and was able to use extract information from text by searching for a specific pattern. Regex is cruical for reformatting and cleaning data as well as web scrapping.</description>
     </item>
     
   </channel>

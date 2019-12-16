@@ -7,7 +7,7 @@
     <meta name="author" content="Jaxon Bowman" />
     <meta name="description" content="Describe your website">
     <link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico">
-    <title>Blog Post</title>
+    <title>Regular Expressions in Python</title>
     <meta name="generator" content="Hugo 0.61.0" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="/css/main.css" />
@@ -44,7 +44,7 @@
         
         <li><a href="/projects/">PROJECTS</a></li>
         
-        <li><a href="/resumepro.pdf/">RESUME</a></li>
+        <li><a href="/resume/">RESUME</a></li>
         
       
       </ul>
@@ -56,7 +56,7 @@
       <div class="container">
         <div class="blog-post">
           <h3>
-            <strong><a href="/blog/blog-post/">Blog Post</a></strong>
+            <strong><a href="/blog/blog-post/">Regular Expressions in Python</a></strong>
           </h3>
         </div>
         <div class="blog-title">
@@ -72,7 +72,27 @@
               
 
 
+<p><img src="/blog/2019-12-15-blog-post_files/meme.jpg" />
+Having never Python before, I found regular expressions to be incredibly useful and interesting. At first it was difficult to figure out the meaning of all of the symbols and how to use them. However, I eventualy got the hang of it and was able to use extract information from text by searching for a specific pattern. Regex is cruical for reformatting and cleaning data as well as web scrapping. Below is a simple example of me using regex.</p>
+<pre class="r"><code>library(reticulate)</code></pre>
+<pre class="python"><code>import re
+string1=&quot;We have to extract these numbers 12, 47, 48 The integers numbers are also interesting: 189 2036 314\&#39;,\&#39; is a separator, so please extract these numbers 125,789,1450 and also these 564,90456 We like to offer you 7890$ per month in order to complete this task... we are joking&quot;
 
+print(string1)</code></pre>
+<pre><code>## We have to extract these numbers 12, 47, 48 The integers numbers are also interesting: 189 2036 314&#39;,&#39; is a separator, so please extract these numbers 125,789,1450 and also these 564,90456 We like to offer you 7890$ per month in order to complete this task... we are joking</code></pre>
+<pre class="python"><code>re.findall(r&quot;\d+&quot;, string1)</code></pre>
+<pre><code>## [&#39;12&#39;, &#39;47&#39;, &#39;48&#39;, &#39;189&#39;, &#39;2036&#39;, &#39;314&#39;, &#39;125&#39;, &#39;789&#39;, &#39;1450&#39;, &#39;564&#39;, &#39;90456&#39;, &#39;7890&#39;]</code></pre>
+<p>The example above is fairly simple. The use of regular expressions I found to be most interesting was to match urls in a string. Regex can be used to pull out all of the urls in a given string. Below is an example of me matching all of my favorite website urls to shop and browse at using Regex.</p>
+<pre class="python"><code>string2=&quot;My favorite store to shop for workout clothing is https://lululemon.com. However, I also love to buy workout or athleisure clothing at https://outdoorvoices.com. For makeup, I enjoy to browse the https://glossier.com website. https://lulus.com has the BEST dresses for any occassion. Another website that I love to shop on for clothing is https://nordstrom.com. Where do you enjoy shopping?&quot;
+
+re.findall(r&#39;https://[\S*]+[\w/]&#39;, string2)
+</code></pre>
+<pre><code>## [&#39;https://lululemon.com&#39;, &#39;https://outdoorvoices.com&#39;, &#39;https://glossier.com&#39;, &#39;https://lulus.com&#39;, &#39;https://nordstrom.com&#39;]</code></pre>
+<p>As you can see, there are many uses for regular expressions. There are much more complicated ways to utilize them! Sometimes it can be challenging to remember what each symbol means and how to use them, but it is always rewarding when you match what you are wanting using regex!</p>
+<div class="figure">
+<img src="/blog/2019-12-15-blog-post_files/ov1.png" alt="Outdoor voices clothing" />
+<p class="caption">Outdoor voices clothing</p>
+</div>
 
               <hr>
               <div class="related-posts">
