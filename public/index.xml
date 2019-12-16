@@ -12,12 +12,39 @@
     
     
     <item>
+      <title>Project 1: Exploratory Analysis</title>
+      <link>/project1/</link>
+      <pubDate>Sun, 15 Dec 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/project1/</guid>
+      <description>Project 1: Exploratory Analysis  Introduction: For this project, I choose to combine three datasets by the variable, country. The first dataset I choose was about Global Plastic Waste, and I obtained it from GitHub’s #tidytuesday project. This dataset includes the per capita mismanaged plastic waste, GDP per capita, country, country code, year, and total population. I choose this dataset because I am interested in sustainability and the environment, and I thought it would be facinating to observe the varying mismanaged waste among countries.</description>
+    </item>
+    
+    <item>
+      <title>Project 2</title>
+      <link>/project2/</link>
+      <pubDate>Sun, 15 Dec 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/project2/</guid>
+      <description>Introduction ipf_lifts &amp;lt;- readr::read_csv(&amp;quot;https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-10-08/ipf_lifts.csv&amp;quot;) ## Parsed with column specification: ## cols( ## name = col_character(), ## sex = col_character(), ## event = col_character(), ## equipment = col_character(), ## age = col_double(), ## age_class = col_character(), ## division = col_character(), ## bodyweight_kg = col_double(), ## weight_class_kg = col_character(), ## best3squat_kg = col_double(), ## best3bench_kg = col_double(), ## best3deadlift_kg = col_double(), ## place = col_character(), ## date = col_date(format = &amp;quot;&amp;quot;), ## federation = col_character(), ## meet_name = col_character() ## ) data3&amp;lt;-na.</description>
+    </item>
+    
+    <item>
       <title>Regular Expressions in Python</title>
       <link>/blog/blog-post/</link>
       <pubDate>Sun, 15 Dec 2019 00:00:00 +0000</pubDate>
       
       <guid>/blog/blog-post/</guid>
       <description>Having never Python before, I found regular expressions to be incredibly useful and interesting. At first it was difficult to figure out the meaning of all of the symbols and how to use them. However, I eventualy got the hang of it and was able to use extract information from text by searching for a specific pattern. Regex is cruical for reformatting and cleaning data as well as web scrapping.</description>
+    </item>
+    
+    <item>
+      <title>Resume</title>
+      <link>/resume/</link>
+      <pubDate>Sun, 15 Dec 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/resume/</guid>
+      <description>Biography My name is Jaxon Bowman, and I am a senior biology student at UT Austin. I am currently a pre-med student, hoping to attend medical school and become a pediatric cardiologist! Another goal of mine to be a part of Doctors without Borders and help provide medical care to people in developing countries. On campus, I am involved in Global Medical Training, and I have been on one medical mission trip to The Dominican Republic!</description>
     </item>
     
     <item>
@@ -30,33 +57,6 @@
   Project 1
   Project 2
   </description>
-    </item>
-    
-    <item>
-      <title>Project 1: Exploratory Analysis</title>
-      <link>/project1/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>/project1/</guid>
-      <description>Project 1: Exploratory Analysis  Introduction: For this project, I choose to combine three datasets by the variable, country. The first dataset I choose was about Global Plastic Waste, and I obtained it from GitHub’s #tidytuesday project. This dataset includes the per capita mismanaged plastic waste, GDP per capita, country, country code, year, and total population. I choose this dataset because I am interested in sustainability and the environment, and I thought it would be facinating to observe the varying mismanaged waste among countries.</description>
-    </item>
-    
-    <item>
-      <title>Project 2</title>
-      <link>/project2/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>/project2/</guid>
-      <description>Introduction ipf_lifts &amp;lt;- readr::read_csv(&amp;quot;https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-10-08/ipf_lifts.csv&amp;quot;) ## Parsed with column specification: ## cols( ## name = col_character(), ## sex = col_character(), ## event = col_character(), ## equipment = col_character(), ## age = col_double(), ## age_class = col_character(), ## division = col_character(), ## bodyweight_kg = col_double(), ## weight_class_kg = col_character(), ## best3squat_kg = col_double(), ## best3bench_kg = col_double(), ## best3deadlift_kg = col_double(), ## place = col_character(), ## date = col_date(format = &amp;quot;&amp;quot;), ## federation = col_character(), ## meet_name = col_character() ## ) data3&amp;lt;-na.</description>
-    </item>
-    
-    <item>
-      <title>Resume</title>
-      <link>/resume/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>/resume/</guid>
-      <description>Biography My name is Jaxon Bowman, and I am a senior biology student at UT Austin. I am currently a pre-med student, hoping to attend medical school and become a pediatric cardiologist! Another goal of mine to be a part of Doctors without Borders and help provide medical care to people in developing countries. On campus, I am involved in Global Medical Training, and I have been on one medical mission trip to The Dominican Republic!</description>
     </item>
     
   </channel>

@@ -1,7 +1,7 @@
 ---
 title: "Project 2"
 author: "Jaxon Bowman"
-date: "11/24/2019"
+date: '2019-12-15'
 output:
   pdf_document: default
   word_document: default
@@ -293,8 +293,8 @@ anova(fit2,fit3,test=&quot;LRT&quot;)</code></pre>
 })
 
 sample_distn%&gt;%t%&gt;%as.data.frame%&gt;%summarize_all(sd)</code></pre>
-<pre><code>##   (Intercept)  maxsquat_c  maxbench_c maxsquat_c:maxbench_c
-## 1   0.1428238 0.004612793 0.006134955          2.246433e-05</code></pre>
+<pre><code>##   (Intercept) maxsquat_c  maxbench_c maxsquat_c:maxbench_c
+## 1   0.1465327 0.00473194 0.006222868          2.319117e-05</code></pre>
 <p>Next, I reran the same regression with the bootstrapped standard errors. These standard errors are slightly different than the original and the robust SE values. The bootstrapped SE for the intercept was 0.146, while the original was 0.139. The max squat SE for the bootstrap was 0.00465 while the SE for the original was 0.0037. The max bench bootstrapped SE was 0.00614 while the original was 0.005. Lastly the bootstrapped SE for the interaction was 2.343e-05, while the original was 2.21e-05. So overall, the bootstrapped standard errors were all slightly higher than the original standard errors. Compared to the robust standard errors, the bootstrapped standard errors were all very close. The p-values were still under 0.05 when using the bootstrapped standard errors.</p>
 </div>
 <div id="logistic-regression" class="section level2">

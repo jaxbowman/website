@@ -61,7 +61,7 @@
         </div>
         <div class="blog-title">
           <h4>
-          January 1, 0001
+          December 15, 2019
             &nbsp;&nbsp;
             
           </h4>
@@ -480,46 +480,46 @@ wss[i]&lt;-temp$tot.withinss%&gt;%glimpse()
 ##  num 3.29e+09
 ##  num 1.96e+09
 ##  num 1.51e+09
-##  num 6.11e+08
+##  num 1.38e+09
 ##  num 4.81e+08
 ##  num 3.92e+08
 ##  num 3.71e+08
-##  num 3.51e+08</code></pre>
+##  num 2.36e+08</code></pre>
 <pre class="r"><code>ggplot()+geom_point(aes(x=1:10,y=wss))+geom_path(aes(x=1:10,y=wss))+
  xlab(&quot;clusters&quot;)+scale_x_continuous(breaks=1:10)</code></pre>
 <p><img src="/Project1_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 <pre class="r"><code>kmeans1&lt;-alldata2%&gt;%scale%&gt;%kmeans(2)%&gt;%glimpse</code></pre>
 <pre><code>## List of 9
-##  $ cluster     : int [1:109] 1 1 2 1 2 1 1 2 1 1 ...
-##  $ centers     : num [1:2, 1:2] 0.6 -1.269 0.385 -0.814
+##  $ cluster     : int [1:109] 2 2 1 2 1 2 2 1 2 2 ...
+##  $ centers     : num [1:2, 1:2] -1.42 0.564 -0.832 0.331
 ##   ..- attr(*, &quot;dimnames&quot;)=List of 2
 ##   .. ..$ : chr [1:2] &quot;1&quot; &quot;2&quot;
 ##   .. ..$ : chr [1:2] &quot;SanitationPercent&quot; &quot;GDPpercapita&quot;
 ##  $ totss       : num 216
-##  $ withinss    : num [1:2] 78.2 20.6
-##  $ tot.withinss: num 98.8
+##  $ withinss    : num [1:2] 14.3 84.4
+##  $ tot.withinss: num 98.7
 ##  $ betweenss   : num 117
-##  $ size        : int [1:2] 74 35
+##  $ size        : int [1:2] 31 78
 ##  $ iter        : int 1
 ##  $ ifault      : int 0
 ##  - attr(*, &quot;class&quot;)= chr &quot;kmeans&quot;</code></pre>
 <pre class="r"><code>kmeans1</code></pre>
-<pre><code>## K-means clustering with 2 clusters of sizes 74, 35
+<pre><code>## K-means clustering with 2 clusters of sizes 31, 78
 ## 
 ## Cluster means:
 ##   SanitationPercent GDPpercapita
-## 1         0.6002317    0.3849458
-## 2        -1.2690613   -0.8138854
+## 1        -1.4196560   -0.8317524
+## 2         0.5642223    0.3305683
 ## 
 ## Clustering vector:
-##   [1] 1 1 2 1 2 1 1 2 1 1 1 2 2 1 1 1 1 2 1 2 1 1 1 1 1 1 1 2 1 1 1 1 2 1 1
-##  [36] 2 1 1 2 2 1 2 1 1 2 2 1 1 1 1 1 1 2 1 2 1 2 1 1 1 1 2 1 1 1 1 2 2 2 1
-##  [71] 1 2 2 1 1 2 1 1 2 1 2 1 1 1 1 2 2 2 1 1 2 1 1 1 2 1 1 2 1 2 1 1 1 1 1
-## [106] 1 1 2 1
+##   [1] 2 2 1 2 1 2 2 1 2 2 2 1 1 2 2 2 2 1 2 1 2 2 2 2 2 2 2 1 2 2 2 2 1 2 2
+##  [36] 1 2 2 1 1 2 1 2 2 1 2 2 2 2 2 2 2 1 2 1 2 1 2 2 2 2 1 2 2 2 2 1 2 1 2
+##  [71] 2 2 1 2 2 1 2 2 1 2 2 2 2 2 2 1 1 1 2 2 1 2 2 2 1 2 2 1 2 1 2 2 2 2 2
+## [106] 2 2 1 2
 ## 
 ## Within cluster sum of squares by cluster:
-## [1] 78.20216 20.61929
-##  (between_SS / total_SS =  54.2 %)
+## [1] 14.27807 84.44311
+##  (between_SS / total_SS =  54.3 %)
 ## 
 ## Available components:
 ## 
@@ -531,19 +531,19 @@ wss[i]&lt;-temp$tot.withinss%&gt;%glimpse()
 ## Variables: 3
 ## $ SanitationPercent &lt;dbl&gt; 97.97665, 90.23560, 57.40339, 94.35405, 48.687…
 ## $ GDPpercapita      &lt;dbl&gt; 9927.182, 12870.603, 5897.683, 18712.063, 2442…
-## $ cluster           &lt;fct&gt; 1, 1, 2, 1, 2, 1, 1, 2, 1, 1, 1, 2, 2, 1, 1, 1…</code></pre>
+## $ cluster           &lt;fct&gt; 2, 2, 1, 2, 1, 2, 2, 1, 2, 2, 2, 1, 1, 2, 2, 2…</code></pre>
 <pre class="r"><code>kmeansclust%&gt;%ggplot(aes(SanitationPercent,GDPpercapita,color=cluster))+geom_point()</code></pre>
 <p><img src="/Project1_files/figure-html/unnamed-chunk-6-2.png" width="672" /></p>
 <pre class="r"><code>kmeans1$betweenss</code></pre>
-<pre><code>## [1] 117.1786</code></pre>
+<pre><code>## [1] 117.2788</code></pre>
 <pre class="r"><code>kmeans1$size</code></pre>
-<pre><code>## [1] 74 35</code></pre>
+<pre><code>## [1] 31 78</code></pre>
 <pre class="r"><code>kmeans1$tot.withinss</code></pre>
-<pre><code>## [1] 98.82144</code></pre>
+<pre><code>## [1] 98.72118</code></pre>
 <pre class="r"><code>kmeans1$centers</code></pre>
 <pre><code>##   SanitationPercent GDPpercapita
-## 1         0.6002317    0.3849458
-## 2        -1.2690613   -0.8138854</code></pre>
+## 1        -1.4196560   -0.8317524
+## 2         0.5642223    0.3305683</code></pre>
 <pre class="r"><code>#GDP per capita and Plastic Waste
 wss2&lt;-vector()
 for(i in 1:10){
@@ -558,42 +558,42 @@ wss2[i]&lt;-temp3$tot.withinss%&gt;%glimpse()
 ##  num 1.38e+09
 ##  num 4.81e+08
 ##  num 3.92e+08
-##  num 3.71e+08
+##  num 2.71e+08
 ##  num 3.51e+08</code></pre>
 <pre class="r"><code>ggplot()+geom_point(aes(x=1:10,y=wss2))+geom_path(aes(x=1:10,y=wss2))+
  xlab(&quot;clusters&quot;)+scale_x_continuous(breaks=1:10)</code></pre>
 <p><img src="/Project1_files/figure-html/unnamed-chunk-6-3.png" width="672" /></p>
 <pre class="r"><code>kmeans2&lt;-alldata3%&gt;%scale%&gt;%kmeans(2)%&gt;%glimpse</code></pre>
 <pre><code>## List of 9
-##  $ cluster     : int [1:109] 2 2 2 2 2 1 2 2 2 2 ...
-##  $ centers     : num [1:2, 1:2] -0.794 0.33 1.313 -0.545
+##  $ cluster     : int [1:109] 1 1 1 1 1 2 1 1 1 1 ...
+##  $ centers     : num [1:2, 1:2] 0.33 -0.794 -0.545 1.313
 ##   ..- attr(*, &quot;dimnames&quot;)=List of 2
 ##   .. ..$ : chr [1:2] &quot;1&quot; &quot;2&quot;
 ##   .. ..$ : chr [1:2] &quot;PlasticWaste&quot; &quot;GDPpercapita&quot;
 ##  $ totss       : num 216
-##  $ withinss    : num [1:2] 21.7 87.7
+##  $ withinss    : num [1:2] 87.7 21.7
 ##  $ tot.withinss: num 109
 ##  $ betweenss   : num 107
-##  $ size        : int [1:2] 32 77
+##  $ size        : int [1:2] 77 32
 ##  $ iter        : int 1
 ##  $ ifault      : int 0
 ##  - attr(*, &quot;class&quot;)= chr &quot;kmeans&quot;</code></pre>
 <pre class="r"><code>kmeans2</code></pre>
-<pre><code>## K-means clustering with 2 clusters of sizes 32, 77
+<pre><code>## K-means clustering with 2 clusters of sizes 77, 32
 ## 
 ## Cluster means:
 ##   PlasticWaste GDPpercapita
-## 1   -0.7936429    1.3125933
-## 2    0.3298256   -0.5454933
+## 1    0.3298256   -0.5454933
+## 2   -0.7936429    1.3125933
 ## 
 ## Clustering vector:
-##   [1] 2 2 2 2 2 1 2 2 2 2 2 2 2 1 1 2 2 2 2 2 1 1 1 2 2 2 1 2 1 2 1 1 2 2 1
-##  [36] 2 1 2 2 2 2 2 2 1 2 2 2 1 1 1 2 2 2 1 2 1 2 2 2 1 2 2 2 2 2 2 2 2 2 1
-##  [71] 1 2 2 1 1 2 2 2 2 2 2 1 1 1 2 2 2 2 1 1 2 2 1 2 2 2 1 2 2 2 2 2 2 2 1
-## [106] 1 2 2 2
+##   [1] 1 1 1 1 1 2 1 1 1 1 1 1 1 2 2 1 1 1 1 1 2 2 2 1 1 1 2 1 2 1 2 2 1 1 2
+##  [36] 1 2 1 1 1 1 1 1 2 1 1 1 2 2 2 1 1 1 2 1 2 1 1 1 2 1 1 1 1 1 1 1 1 1 2
+##  [71] 2 1 1 2 2 1 1 1 1 1 1 2 2 2 1 1 1 1 2 2 1 1 2 1 1 1 2 1 1 1 1 1 1 1 2
+## [106] 2 1 1 1
 ## 
 ## Within cluster sum of squares by cluster:
-## [1] 21.67588 87.74668
+## [1] 87.74668 21.67588
 ##  (between_SS / total_SS =  49.3 %)
 ## 
 ## Available components:
@@ -604,17 +604,17 @@ wss2[i]&lt;-temp3$tot.withinss%&gt;%glimpse()
 <pre class="r"><code>kmeans2$betweenss</code></pre>
 <pre><code>## [1] 106.5774</code></pre>
 <pre class="r"><code>kmeans2$size</code></pre>
-<pre><code>## [1] 32 77</code></pre>
+<pre><code>## [1] 77 32</code></pre>
 <pre class="r"><code>kmeans2$centers</code></pre>
 <pre><code>##   PlasticWaste GDPpercapita
-## 1   -0.7936429    1.3125933
-## 2    0.3298256   -0.5454933</code></pre>
+## 1    0.3298256   -0.5454933
+## 2   -0.7936429    1.3125933</code></pre>
 <pre class="r"><code>kmeansclust2&lt;-alldata3%&gt;%mutate(cluster=as.factor(kmeans2$cluster))%&gt;%glimpse</code></pre>
 <pre><code>## Observations: 109
 ## Variables: 3
 ## $ PlasticWaste &lt;dbl&gt; 0.032, 0.086, 0.045, 0.026, 0.030, 0.002, 0.053, 0.…
 ## $ GDPpercapita &lt;dbl&gt; 9927.182, 12870.603, 5897.683, 18712.063, 2442.729,…
-## $ cluster      &lt;fct&gt; 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 1, 1, 2, 2, …</code></pre>
+## $ cluster      &lt;fct&gt; 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, …</code></pre>
 <pre class="r"><code>kmeansclust2%&gt;%ggplot(aes(GDPpercapita,PlasticWaste,color=cluster))+geom_point()</code></pre>
 <p><img src="/Project1_files/figure-html/unnamed-chunk-6-4.png" width="672" /></p>
 <pre class="r"><code>#Sanitation and Plastic Waste
@@ -630,45 +630,45 @@ wss3[i]&lt;-temp4$tot.withinss%&gt;%glimpse()
 ##  num 2937
 ##  num 1694
 ##  num 1553
-##  num 1530
-##  num 1524
+##  num 1314
+##  num 678
 ##  num 703
-##  num 593</code></pre>
+##  num 583</code></pre>
 <pre class="r"><code>ggplot()+geom_point(aes(x=1:10,y=wss3))+geom_path(aes(x=1:10,y=wss3))+
  xlab(&quot;clusters&quot;)+scale_x_continuous(breaks=1:10)</code></pre>
 <p><img src="/Project1_files/figure-html/unnamed-chunk-6-5.png" width="672" /></p>
 <pre class="r"><code>kmeans5&lt;-alldata4%&gt;%scale%&gt;%kmeans(2)%&gt;%glimpse()</code></pre>
 <pre><code>## List of 9
-##  $ cluster     : int [1:109] 2 2 1 2 1 2 2 1 2 2 ...
-##  $ centers     : num [1:2, 1:2] -1.5434 0.5335 0.1008 -0.0348
+##  $ cluster     : int [1:109] 2 1 2 2 2 2 2 2 2 2 ...
+##  $ centers     : num [1:2, 1:2] -0.1204 0.0478 1.2383 -0.4921
 ##   ..- attr(*, &quot;dimnames&quot;)=List of 2
 ##   .. ..$ : chr [1:2] &quot;1&quot; &quot;2&quot;
 ##   .. ..$ : chr [1:2] &quot;SanitationPercent&quot; &quot;PlasticWaste&quot;
 ##  $ totss       : num 216
-##  $ withinss    : num [1:2] 31.8 94.1
-##  $ tot.withinss: num 126
-##  $ betweenss   : num 90.1
-##  $ size        : int [1:2] 28 81
+##  $ withinss    : num [1:2] 55.7 93.3
+##  $ tot.withinss: num 149
+##  $ betweenss   : num 67.1
+##  $ size        : int [1:2] 31 78
 ##  $ iter        : int 1
 ##  $ ifault      : int 0
 ##  - attr(*, &quot;class&quot;)= chr &quot;kmeans&quot;</code></pre>
 <pre class="r"><code>kmeans5</code></pre>
-<pre><code>## K-means clustering with 2 clusters of sizes 28, 81
+<pre><code>## K-means clustering with 2 clusters of sizes 31, 78
 ## 
 ## Cluster means:
 ##   SanitationPercent PlasticWaste
-## 1        -1.5434496    0.1007814
-## 2         0.5335381   -0.0348380
+## 1       -0.12038285    1.2382796
+## 2        0.04784447   -0.4921368
 ## 
 ## Clustering vector:
-##   [1] 2 2 1 2 1 2 2 1 2 2 2 2 1 2 2 2 2 1 2 1 2 2 2 2 2 2 2 1 2 2 2 2 1 2 2
-##  [36] 1 2 2 1 1 2 1 2 2 1 2 2 2 2 2 2 2 1 2 1 2 1 2 2 2 2 1 2 2 2 2 1 2 1 2
-##  [71] 2 2 1 2 2 2 2 2 1 2 2 2 2 2 2 1 1 1 2 2 2 2 2 2 1 2 2 1 2 1 2 2 2 2 2
-## [106] 2 2 1 2
+##   [1] 2 1 2 2 2 2 2 2 2 2 2 2 2 2 2 1 2 1 2 1 2 2 2 2 2 2 2 2 2 1 2 2 2 2 2
+##  [36] 2 2 1 2 2 1 2 1 2 2 2 2 2 2 2 2 1 2 2 1 2 2 1 1 2 1 2 1 2 2 2 2 2 1 2
+##  [71] 2 2 1 2 2 1 1 2 1 2 2 2 2 2 1 1 1 2 2 2 1 1 2 1 1 2 2 2 1 2 1 1 2 2 2
+## [106] 2 2 1 1
 ## 
 ## Within cluster sum of squares by cluster:
-## [1] 31.75714 94.09984
-##  (between_SS / total_SS =  41.7 %)
+## [1] 55.66997 93.27731
+##  (between_SS / total_SS =  31.0 %)
 ## 
 ## Available components:
 ## 
@@ -676,11 +676,11 @@ wss3[i]&lt;-temp4$tot.withinss%&gt;%glimpse()
 ## [5] &quot;tot.withinss&quot; &quot;betweenss&quot;    &quot;size&quot;         &quot;iter&quot;        
 ## [9] &quot;ifault&quot;</code></pre>
 <pre class="r"><code>kmeans5$size</code></pre>
-<pre><code>## [1] 28 81</code></pre>
+<pre><code>## [1] 31 78</code></pre>
 <pre class="r"><code>kmeans5$betweenss</code></pre>
-<pre><code>## [1] 90.14302</code></pre>
+<pre><code>## [1] 67.05272</code></pre>
 <pre class="r"><code>kmeans5$tot.withinss</code></pre>
-<pre><code>## [1] 125.857</code></pre>
+<pre><code>## [1] 148.9473</code></pre>
 <pre class="r"><code>kmeansclust5&lt;-alldata4%&gt;%mutate(cluster=as.factor(kmeans5$cluster))
 kmeansclust5%&gt;%ggplot(aes(SanitationPercent,PlasticWaste,color=cluster))+geom_point()</code></pre>
 <p><img src="/Project1_files/figure-html/unnamed-chunk-6-6.png" width="672" />

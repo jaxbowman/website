@@ -1,7 +1,7 @@
 ---
 title: 'Project 1: Exploratory Analysis'
 author: "Jaxon Bowman"
-date: "10/20/2019"
+date: '2019-12-15'
 output:
   pdf_document: default
   word_document: default
